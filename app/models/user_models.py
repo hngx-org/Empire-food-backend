@@ -13,3 +13,12 @@ class Users():
   refresh_token = Column(String(255))
   created_at = Column(datetime.utcnow())
   updated_at = Column(datetime.utcnow())
+
+
+  class withdrawals():
+    __tablename__ = 'withdrawals'
+    id = Column(Integer, primary_key=True, default=uuid)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    status = Column(String(50))
+    amount = Column(Integer)
+    created_at = Column(datetime.utcnow())
