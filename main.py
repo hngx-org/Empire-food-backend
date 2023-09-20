@@ -7,7 +7,7 @@ app = FastAPI()
 async def health():
     return {"status": "ok"}
 
-@app.get("/api/search")
+@app.get("/api/users/search")
 async def search(name_or_email: str = ""):
     return []
 
