@@ -12,14 +12,13 @@ def authenticate(token: Request):
         raise HTTPException(status_code=401, detail="Unauthorized")
     token = token.split(" ")[1] 
     
-    
     expected_token = None
     if token != expected_token:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
 
 @app.post("/auth/user/signup")
-async def signup(request: UserCreate, Depends=[]):
+async def signup(request: UserCreate, token: Depends(authenticate)):
     user, error = create_user(request)
     if error:
         return {"message": error.msg, "statusCode": error.code}
