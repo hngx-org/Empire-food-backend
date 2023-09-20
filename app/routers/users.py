@@ -1,8 +1,21 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends , HTTPException, Request
 from app.schemas.user_schemas import UserCreate
 from app.services.user_services import create_user
 
 app = APIRouter()
+
+
+
+def authenticate(token: Request):
+    token = token.headers.get("Authorization")
+    if token is None or not token.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    token = token.split(" ")[1] 
+    
+    
+    expected_token = None
+    if token != expected_token:
+        raise HTTPException(status_code=401, detail="Unauthorized")
 
 
 @app.post("/auth/user/signup")
