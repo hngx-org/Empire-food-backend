@@ -7,7 +7,7 @@ from app.db.database import get_db
 from app.models.user_models import User
 from app.schemas import user_schemas
 
-app = APIRouter(prefix="/auth", tags=["Authentication"])
+app = APIRouter(prefix="/api/auth", tags=["Authentication"])
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
