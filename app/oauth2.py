@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session
 
 from .db.database import get_db
 from .models.user_models import User
-from .schemas.user_schemas import UserResponseSchema
 
 SECRET_KEY = config("SECRET_KEY")
 ALGORITHM = config("ALGORITHM", default="HS256")
@@ -79,7 +78,7 @@ def verify_access_token(token: str, db: Session = Depends(get_db)):
 def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
-) -> UserResponseSchema:
+):
     """Gets user's token
 
     Protected endpoints that require user to be authenticated will include this function as a dependency in the function definition.
