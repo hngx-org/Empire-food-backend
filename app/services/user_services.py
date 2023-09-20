@@ -10,16 +10,8 @@ from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def create_user(db:Session, user:UserCreate):
-
-  if not is_valid_email(user.email):
-     return None, Response(msg="Invalid email address", code=400)
   
-  if user_db.get_user(db, user.email) != None:
-      return None, Response(msg="Email already exists", code=400)
-  
-  user.password = hash_password(user.password)
-
-  return user_db.create_user(db, user)
+  pass
   
 
 
@@ -34,11 +26,6 @@ def get_user_by_email(db:Session, email:str):
 
   pass
 
-
-def is_valid_email(email):
-    if re.fullmatch(EMAIL_REGEX, email):
-        return True
-    return False
 
 def hash_password(password):
     """
