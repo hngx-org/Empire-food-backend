@@ -10,10 +10,12 @@ httptools==0.6.0
 idna==3.4
 mysql-connector-python==8.1.0
 mysqlclient==2.2.0
+passlib==1.7.4
 protobuf==4.21.12
 pydantic==2.3.0
 pydantic_core==2.6.3
 python-dateutil==2.8.2
+python-decouple==3.8
 python-dotenv==1.0.0
 PyYAML==6.0.1
 six==1.16.0
