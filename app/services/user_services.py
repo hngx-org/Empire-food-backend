@@ -30,6 +30,15 @@ def get_user_by_email(db:Session, email:str):
 
   pass
 
+def search_user_by_name_or_email(db: Session, name_or_email: str):
+    # Query the database to find users whose first_name, last_name, or email contains the query
+    users = db.query(User).filter(
+        (User.first_name.ilike(f'%{name_or_email}%')) |
+        (User.last_name.ilike(f'%{name_or_email}%')) |
+        (User.email.ilike(f'%{name_or_email}%'))
+    ).all()
+
+    return users
 
 def search_user_by_name_or_email(db: Session, name_or_email: str):
     # Query the database to find users whose first_name, last_name, or email contains the query
