@@ -1,22 +1,67 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from passlib.context import CryptContext
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from ..db.database import get_db
-from ..schemas.login_schema import LoginSchema, LoginResponseSchema
-from ..models.user_models import Users
-from ..services.user_services import verify_password
+
+from app import oauth2
+from app.db.database import get_db
+from app.models.user_models import User
+from app.schemas import user_schemas as schemas
+
+app = APIRouter(prefix="/auth", tags=["Authentication"])
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-router = APIRouter(tags=['Authentication'])
+class TokenRequest(BaseModel):
+    refresh_token: str
 
 
-@router.post('/login', response_model=LoginResponseSchema, status_code=status.HTTP_200_OK)
-def login(user_credentials: LoginSchema, db: Session = Depends(get_db)):
-    user = db.query(Users).filter(
-        Users.email == user_credentials.username).first()
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+@app.post("/login", status_code=200)
+def login(
+    credentials: schemas.UserLogin, db: Session = Depends(get_db)
+) -> schemas.User:
+    """Logs in user"""
+
+    user = db.query(User).filter_by(email=credentials.email).first()
+
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='Invalid Credentials')
-    if not verify_password(user_credentials.password):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail='Invalid Credentials')
-    return {'message': 'Login successful', "token": "exampleToken"}
+            detail="Invalid credentials.", status_code=status.HTTP_403_FORBIDDEN
+        )
+    else:
+        # Verify user's password
+        if not verify_password(credentials.password, user.password_hash):
+            raise HTTPException(
+                detail="Invalid credentials.", status_code=status.HTTP_403_FORBIDDEN
+            )
+
+    access_token = oauth2.create_access_token({"id": user.id})
+    refresh_token = oauth2.create_refresh_token({"id": user.id})
+
+    return {
+        "message": "User authenticated successfully.",
+        "data": {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "email": user.email,
+            "id": user.id,
+            "is_admin": user.is_admin,
+        },
+    }
+
+
+@app.post("/refresh", status_code=200)
+def refresh_token(token_request: TokenRequest):
+    """Refreshes user's access token"""
+
+    access_token = oauth2.refresh_access_token(token_request.refresh_token)
+
+    return {
+        "message": "User authenticated successfully.",
+        "data": {"access_token": access_token},
+    }
