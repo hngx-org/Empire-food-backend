@@ -5,6 +5,7 @@ from datetime import datetime
 from uuid import uuid4
 from app.Responses.response import Response
 
+
 def get_user(db: Session, user_id: int):
     return db.query(Users).filter(Users.id == user_id).first()
 
