@@ -5,14 +5,15 @@ from datetime import datetime
 class Users():
   __tablename__ = 'users'
   id = Column(Integer, primary_key=True, default=uuid)
-  name = Column(String(50))
+  first_name = Column(String(50))
+  last_name = Column(String(50))
   email = Column(String(50))
   phonenumber = Column(String(50))
   password_hash = Column(String(50))
   org_id = Column(Integer, ForeignKey('organization.id'))
   refresh_token = Column(String(255))
-  created_at = Column(datetime.utcnow())
-  updated_at = Column(datetime.utcnow())
+  created_at = Column(DateTime,default=datetime.utcnow())
+  updated_at = Column(DateTime,default=datetime.utcnow())
 
 
   class withdrawals():
@@ -21,4 +22,4 @@ class Users():
     user_id = Column(Integer, ForeignKey('users.id'))
     status = Column(String(50))
     amount = Column(Integer)
-    created_at = Column(datetime.utcnow())
+    created_at = Column(DateTime,default=datetime.utcnow())

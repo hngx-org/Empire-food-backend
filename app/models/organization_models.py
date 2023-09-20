@@ -11,7 +11,7 @@ class orgnization_lunch_wallet():
   balance = Column(Integer)
 
 
-class orgnization():
+class organization():
   __tablename__ = 'organization'
   id = Column(Integer, primary_key=True, default=uuid)
   name = Column(String(50))
