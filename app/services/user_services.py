@@ -44,3 +44,19 @@ def compare_password(password, hashed_password):
     It returns True if they match, False otherwise.
     """
     return pwd_context.verify(password, hashed_password)
+
+
+def get_current_user(token: str = Depends(authenticate), db: Session = Depends(get_db)):
+    """
+    Retrieves a user based on an access token.
+
+    :param token: The access token for authentication.
+    :param db: Database session.
+
+    :return: User object if found, None if the user does not exist or the token is invalid.
+    """
+    user_id = token.id
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="User does not exist.")
+    return user
