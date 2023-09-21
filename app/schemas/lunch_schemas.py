@@ -22,13 +22,13 @@ class GetLunchResponse(BaseModel):
                 "message": "Lunch request created successfully",
                 "statusCode": 201,
                 "data": {
-		            "receiverId": 11,
-    		        "senderId": 7,
-	                "quantity": 2,
-		            "redeemed": False,
-	                "note": "Special instructions for the lunch",
-		            "created_at": "2023-09-21T15:56:41.716282",
-    		        "id": 55
+                    "receiverId": 11,
+                    "senderId": 7,
+                    "quantity": 2,
+                    "redeemed": False,
+                    "note": "Special instructions for the lunch",
+                    "created_at": "2023-09-21T15:56:41.716282",
+                    "id": 55
 	            }
             }
         }
