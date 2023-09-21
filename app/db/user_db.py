@@ -7,9 +7,4 @@ from app.Responses.response import Response
 
 
 def get_user(db: Session, user_id: int):
-    pass
-
-
-# add user to database
-def create_user(db: Session, user: UserCreate):
-    pass
+    return db.query(User).filter(User.id == user_id).first()
