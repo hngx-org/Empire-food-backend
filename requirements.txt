@@ -1,30 +1,46 @@
+-i https://pypi.org/simple
 annotated-types==0.5.0
 anyio==3.7.1
+bcrypt==4.0.1 ; python_version >= '3.6'
+cffi==1.15.1
 click==8.1.7
+cryptography==41.0.4 ; python_version >= '3.7'
+decorator==5.1.1 ; python_version >= '3.5'
+deprecated==1.2.14 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+dnspython==2.4.2 ; python_version >= '3.8' and python_version < '4.0'
+ecdsa==0.18.0 ; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
+email-validator==2.0.0.post2
 exceptiongroup==1.1.3
-Faker==19.6.1
+fabric2==3.2.2
+faker==19.6.2
 fastapi==0.103.1
 greenlet==2.0.2
 h11==0.14.0
 httptools==0.6.0
 idna==3.4
+invoke==2.2.0 ; python_version >= '3.6'
 mysql-connector-python==8.1.0
-mysqlclient==2.2.0
+paramiko==3.3.1 ; python_version >= '3.6'
 passlib==1.7.4
 protobuf==4.21.12
-pydantic==2.3.0
-pydantic_core==2.6.3
-python-dateutil==2.8.2
+pyasn1==0.5.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'
+pycparser==2.21
+pydantic[email]==2.3.0
+pydantic-core==2.6.3
+pynacl==1.5.0 ; python_version >= '3.6'
+python-dateutil==2.8.2 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 python-decouple==3.8
 python-dotenv==1.0.0
-PyYAML==6.0.1
-six==1.16.0
+python-jose==3.3.0
+pyyaml==6.0.1
+rsa==4.9 ; python_version >= '3.6' and python_version < '4'
+six==1.16.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 sniffio==1.3.0
-SQLAlchemy==2.0.21
+sqlalchemy==2.0.21
 starlette==0.27.0
-typing_extensions==4.8.0
+typing-extensions==4.8.0
 uvicorn==0.23.2
 uvloop==0.17.0
 watchfiles==0.20.0
 websockets==11.0.3
-python-decouple
+wrapt==1.15.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
