@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from pydantic.types import Enum
 
 from app.services.user_services import hash_password
-from app.db.database import get_db
+from app.db.database import get_db_unyield
 from app.models.lunch_models import Lunch
 from app.models.organization_models import Organization, OrganizationInvite, OrganizationLaunchWallet
 from app.models.user_models import User, Withdrawal
@@ -199,7 +199,7 @@ def seed_lunches() -> list[Lunch]:
 
 def populate_db():
     """populate the database"""
-    db = get_db()
+    db = get_db_unyield()
 
     orgs, users = seed_users()
     org_wallets = seed_org_wallets()

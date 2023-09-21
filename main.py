@@ -6,10 +6,14 @@ from app.routers.users import app as user_app
 from app.routers.bank_account import router as bank_details
 
 
-api = APIRouter(prefix="/api")
-
-api.include_router(user_app)
-api.include_router(auth_router)
+v1 = APIRouter(prefix="/api/v1")
+############################# include all routers here #############################
+v1.include_router(user_app)
+v1.include_router(auth_router)
+####################################################################################
+@v1.get("/health")
+async def health():
+    return {"status": "ok"}
 
 # Added by Neon
 api.include_router(bank_details)
@@ -27,12 +31,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(api)
+app.include_router(v1)
 
 
-@app.get("/health")
-async def health():
-    return {"status": "ok"}
+
 
 
 if __name__ == "__main__":
