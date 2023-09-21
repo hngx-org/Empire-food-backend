@@ -35,25 +35,6 @@ def search_user_by_name_or_email(db: Session, name_or_email: str):
 
     return users
 
-def search_user_by_name_or_email(db: Session, name_or_email: str):
-    # Query the database to find users whose first_name, last_name, or email contains the query
-    users = db.query(User).filter(
-        (User.first_name.ilike(f'%{name_or_email}%')) |
-        (User.last_name.ilike(f'%{name_or_email}%')) |
-        (User.email.ilike(f'%{name_or_email}%'))
-    ).all()
-
-    users_response = [UserSearchSchema(
-        id=user.id,
-        first_name=user.first_name,
-        last_name=user.last_name,
-        profile_pic=user.profile_pic,
-        email=user.email,
-        phone=user.phone,
-        is_admin=user.is_admin
-    ) for user in users]
-    return users_response
-
 
 def hash_password(password):
     """
