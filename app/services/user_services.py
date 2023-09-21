@@ -1,7 +1,6 @@
-
 from sqlalchemy.orm import Session
 from fastapi import HTTPException,Depends
-from app.schemas.user_schemas import UserCreate
+from app.schemas.user_schemas import UserCreate, UserSearchSchema
 from app.models.user_models import User
 import re
 from app.settings.settings import EMAIL_REGEX
@@ -11,24 +10,30 @@ from app.db.database import get_db
 from passlib.context import CryptContext
 from app.middleware.authenticate import  authenticate
 
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-def create_user(db:Session, user:UserCreate):
-  
-  pass
-  
 
 
+def create_user(db: Session, user: UserCreate):
+    pass
 
 
-def get_user(db:Session, user_id:int):
+def get_user(db: Session, user_id: int):
+    pass
 
-  pass
+
+def get_user_by_email(db: Session, email: str):
+    pass
 
 
-def get_user_by_email(db:Session, email:str):
+def search_user_by_name_or_email(db: Session, name_or_email: str):
+    # Query the database to find users whose first_name, last_name, or email contains the query
+    users = db.query(User).filter(
+        (User.first_name.ilike(f'%{name_or_email}%')) |
+        (User.last_name.ilike(f'%{name_or_email}%')) |
+        (User.email.ilike(f'%{name_or_email}%'))
+    ).all()
 
-  pass
+    return users
 
 
 def hash_password(password):
@@ -55,11 +60,11 @@ def get_current_user(token: str = Depends(authenticate), db: Session = Depends(g
 
     :return: User object if found, None if the user does not exist or the token is invalid.
     """
-    user_id = token.id 
-    user = db.query(User).filter(User.id == user_id).first()  
+    user_id = token.id
+    user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=400, detail="User does not exist.")
     return user
 
-  
-  
+
+
