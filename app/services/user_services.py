@@ -1,7 +1,8 @@
 
 from sqlalchemy.orm import Session
 from fastapi import HTTPException,Depends
-from app.schemas.user_schemas import UserCreate,User
+from app.schemas.user_schemas import UserCreate
+from app.models.user_models import User
 import re
 from app.settings.settings import EMAIL_REGEX
 from app.Responses.response import Response
