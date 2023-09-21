@@ -9,7 +9,7 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    org_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"))
+    org_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"), nullable=True)
     first_name = Column(String(255))
     last_name = Column(String(255))
     profile_pic = Column(String(255))  # Assuming a URL
@@ -31,8 +31,6 @@ class User(Base):
 
     organization = relationship("Organization", back_populates="users")
     withdrawals = relationship("Withdrawal", back_populates="user")
-    sender_lunches = relationship("Lunch", back_populates="sender", foreign_keys="[Lunch.sender_id]",)
-    receiver_lunches = relationship("Lunch", back_populates="receiver", foreign_keys="[Lunch.receiver_id]")
 
 
 class Withdrawal(Base):

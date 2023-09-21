@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.schemas.user_schemas import UserCreate
-# from app.models.user_models import Users
+from app.models.user_models import User
 from datetime import datetime
 from uuid import uuid4
 from app.Responses.response import Response
