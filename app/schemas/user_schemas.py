@@ -15,3 +15,13 @@ class UserResponseSchema(BaseModel):
   name: str
   access_token: str
   is_admin: bool
+  
+class UserProfileSchema(BaseModel):
+  name: str
+  email: str
+  profile_picture: str
+  phone_number: str
+  bank_number: str
+  bank_code: str
+  bank_name: str
+  is_admin: bool
