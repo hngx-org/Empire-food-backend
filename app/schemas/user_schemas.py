@@ -2,7 +2,6 @@ from pydantic import BaseModel, EmailStr
 
 
 class UserCreate(BaseModel):
-staging
   email:str
   password: str
   first_name: str
@@ -44,4 +43,4 @@ class UserLogin(BaseModel):
 
 class TokenRequest(BaseModel):
     refresh_token: str
-user_schema
+
