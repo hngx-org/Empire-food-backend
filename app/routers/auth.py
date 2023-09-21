@@ -11,7 +11,7 @@ from app.middleware.authenticate import (
 from app.models.user_models import User
 from app.schemas import user_schemas
 
-app = APIRouter(prefix="/api/auth", tags=["Authentication"])
+app = APIRouter(prefix="/auth", tags=["Authentication"])
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
