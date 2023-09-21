@@ -3,7 +3,7 @@ from datetime import datetime , timedelta
 
 from fastapi import APIRouter , HTTPException , status , Depends
 
-from jose import jwt , JWTError
+from jose import JWTError, jwt
 from app.settings import settings
 
 setting = settings.Settings()
