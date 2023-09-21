@@ -10,7 +10,7 @@ from app.services.lunch_services import fetch_lunch
 
 app = APIRouter()
 
-@app.get("/api/lunch/{lunch_id}", response_model=GetLunchResponse)
+@app.get("lunch/{lunch_id}", response_model=GetLunchResponse)
 async def get_lunch(lunch_id: int, user_id: int = Depends(authenticate), db: Session = Depends(get_db)):
     # auth_user = get_user(db, user_id)
     auth_user=db.query(User).filter(User.id==user_id).first()
