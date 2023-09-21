@@ -19,7 +19,7 @@ def get_account_details(db:Session=Depends(get_db),user_id:int=Depends(get_curre
             raise HTTPException(
             403,detail={"Unauthenticated":"User not found"}
         )
-    return {"bank_name":auth_user.bank_name,"bank_number":auth_user.bank_number}
+    return {"message":"Bank details","StatusCode":200,"data":{"bank_name":auth_user.bank_name,"bank_number":auth_user.bank_number}}
 
 @router.post("")
 def create_bank_details(data:BankDetailsCreate,db:Session=Depends(get_db),user_id:int=Depends(get_current_user)):
@@ -34,5 +34,5 @@ def create_bank_details(data:BankDetailsCreate,db:Session=Depends(get_db),user_i
         auth_user.first().bank_code=data.bank_code
         auth_user.first().bank_number=data.bank_number
         db.commit()
-        return {"message":"Successfully created bank account","StatusCode":200}
+        return {"message":"Successfully created bank account","StatusCode":200,"data":"null"}
 

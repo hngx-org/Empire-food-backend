@@ -10,13 +10,14 @@ v1 = APIRouter(prefix="/api/v1")
 ############################# include all routers here #############################
 v1.include_router(user_app)
 v1.include_router(auth_router)
+# Added by Neon
+v1.include_router(bank_details)
 ####################################################################################
 @v1.get("/health")
 async def health():
     return {"status": "ok"}
 
-# Added by Neon
-api.include_router(bank_details)
+
 
 app = FastAPI()
 
