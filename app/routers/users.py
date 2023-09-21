@@ -17,5 +17,8 @@ async def signup(request: UserCreate):
 
 @app.get("/api/user/profile")
 async def user_profile(current_user: UserProfileSchema = Depends(get_current_user)):
-    return {current_user}
+    return {"message": "User data fetched successfully",
+            "statusCode": 200
+            "data": current_user
+    }
     
