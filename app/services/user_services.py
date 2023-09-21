@@ -8,7 +8,7 @@ from app.Responses.response import Response
 from app.db import user_db
 from app.db.database import get_db
 from passlib.context import CryptContext
-from app.middleware.jwt_handler import verify_access_token
+from app.middleware.authenticate import  authenticate
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -45,8 +45,8 @@ def compare_password(password, hashed_password):
     return pwd_context.verify(password, hashed_password)
 
 
-def get_current_user(token: str, db: Session = Depends(get_db)):
-     """
+def get_current_user(token: str = Depends(authenticate), db: Session = Depends(get_db)):
+    """
     Retrieves a user based on an access token.
 
     :param token: The access token for authentication.
@@ -54,13 +54,11 @@ def get_current_user(token: str, db: Session = Depends(get_db)):
 
     :return: User object if found, None if the user does not exist or the token is invalid.
     """
-    try:
-        data = verify_access_token(token)
-        user_id = data.id
-        user = db.query(User).filter(User.id == user_id).first()
-        if not user:
-            raise HTTPException(status_code=400, detail="User does not exist.")
-        return user
+    user_id = token.id 
+    user = db.query(User).filter(User.id == user_id).first()  
+    if not user:
+        raise HTTPException(status_code=400, detail="User does not exist.")
+    return user
 
   
   
