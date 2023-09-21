@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from fastapi import HTTPException,Depends
+from fastapi import HTTPException, Depends
 from app.schemas.user_schemas import UserCreate, UserSearchSchema
 from app.models.user_models import User
 import re
@@ -8,7 +8,7 @@ from app.Responses.response import Response
 from app.db import user_db
 from app.db.database import get_db
 from passlib.context import CryptContext
-from app.middleware.authenticate import  authenticate
+from app.middleware.authenticate import authenticate
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -25,7 +25,7 @@ def get_user_by_email(db: Session, email: str):
     pass
 
 
-def search_user_by_name_or_email(db: Session, name_or_email: str):
+def search_user_by_name_or_email(db: Session, name_or_email: str = Depends(authenticate)):
     # Query the database to find users whose first_name, last_name, or email contains the query
     users = db.query(User).filter(
         (User.first_name.ilike(f'%{name_or_email}%')) |
@@ -74,6 +74,3 @@ def get_current_user(token: str = Depends(authenticate), db: Session = Depends(g
     if not user:
         raise HTTPException(status_code=400, detail="User does not exist.")
     return user
-
-
-
