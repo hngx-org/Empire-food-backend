@@ -2,18 +2,18 @@ from pydantic import BaseModel
 
 
 class LunchResponseData(BaseModel):
-    receiver_id: int,
-    sender_id: int,
-    quantity: int,
-    redeemed: bool,
-    note: str,
-    created_at: str,
+    receiver_id: int
+    sender_id: int
+    quantity: int
+    redeemed: bool
+    note: str
+    created_at: str
     id: int
 
 
 class GetLunchResponse(BaseModel):
-    message: str,
-    status_code: int,
+    message: str
+    status_code: int
     data: LunchResponseData
 
     class Config:

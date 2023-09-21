@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.middleware.authenticate import authenticate
-from app.models.user_models import get_user, User
+from app.models.user_models import User
 from app.schemas.lunch_schemas import GetLunchResponse
 from app.services.lunch_services import fetch_lunch
 
