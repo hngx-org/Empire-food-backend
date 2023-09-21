@@ -1,12 +1,11 @@
-from fastapi import APIRouter, Depends , HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
-from app.schemas.user_schemas import UserCreate,UserProfileSchema
+from app.schemas.user_schemas import UserCreate, UserProfileSchema
 from app.services.user_services import create_user, get_current_user, search_user_by_name_or_email
 
 app = APIRouter()
-
 
 
 @app.post("/auth/user/signup")
@@ -23,8 +22,7 @@ async def user_profile(current_user: UserProfileSchema = Depends(get_current_use
     return {"message": "User data fetched successfully",
             "statusCode": 200,
             "data": current_user
-    }
-
+            }
 
 
 

@@ -13,4 +13,3 @@ def get_user(db: Session, user_id: int):
 # add user to database
 def create_user(db: Session, user: UserCreate):
     pass
-
