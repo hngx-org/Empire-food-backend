@@ -6,11 +6,15 @@ from app.routers.lunch import app as lunch_app
 from app.routers.users import app as user_app
 
 
-api = APIRouter(prefix="/api")
-
-api.include_router(lunch_app)
-api.include_router(user_app)
-api.include_router(auth_router)
+v1 = APIRouter(prefix="/api/v1")
+############################# include all routers here #############################
+v1.include_router(lunch_app)
+v1.include_router(user_app)
+v1.include_router(auth_router)
+####################################################################################
+@v1.get("/health")
+async def health():
+    return {"status": "ok"}
 
 app = FastAPI()
 
@@ -25,12 +29,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(api)
+app.include_router(v1)
 
 
-@app.get("/health")
-async def health():
-    return {"status": "ok"}
+
 
 
 if __name__ == "__main__":
