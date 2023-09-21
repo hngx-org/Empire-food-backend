@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr
 
 
 class UserCreate(BaseModel):
+staging
   email:str
   password: str
   first_name: str
@@ -25,3 +26,22 @@ class UserProfileSchema(BaseModel):
   bank_code: str
   bank_name: str
   is_admin: bool
+   
+
+
+class UserLoginResponse(BaseModel):
+    id: int
+    email: EmailStr
+    access_token: str
+    refresh_token: str
+    is_admin: bool
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class TokenRequest(BaseModel):
+    refresh_token: str
+user_schema
