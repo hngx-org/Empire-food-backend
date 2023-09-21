@@ -21,5 +21,5 @@ class Lunch(Base):
     is_deleted = Column(Boolean, default=False)
 
     organization = relationship("Organization", back_populates="lunches")
-    sender = relationship("User", back_populates="sender_lunches", foreign_keys=[sender_id])
-    receiver = relationship("User", back_populates="receiver_lunches", foreign_keys=[receiver_id])
+    sender = relationship("User", backref="sender_lunches", foreign_keys=[sender_id])
+    receiver = relationship("User", backref="receiver_lunches", foreign_keys=[receiver_id])
