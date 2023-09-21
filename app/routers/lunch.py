@@ -10,7 +10,7 @@ app = APIRouter()
 create_database()
 
 
-@app.post("/api/lunch/send/{user_id}", response_model=SendLunchResponse)
+@app.post("/api/lunch/send", response_model=SendLunchResponse)
 async def send_lunch(user_id:int, data:SendLunch, db:Session=Depends(get_db)):
     resp = sendLunch(db=db,data=data,user_id=user_id)
     if resp:
