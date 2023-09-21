@@ -33,7 +33,16 @@ def search_user_by_name_or_email(db: Session, name_or_email: str):
         (User.email.ilike(f'%{name_or_email}%'))
     ).all()
 
-    return users
+    users_response = [UserSearchSchema(
+        id=user.id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        profile_pic=user.profile_pic,
+        email=user.email,
+        phone=user.phone,
+        is_admin=user.is_admin
+    ) for user in users]
+    return users_response
 
 
 def hash_password(password):
