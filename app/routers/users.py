@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends , HTTPException, Request
-from app.schemas.user_schemas import UserCreate
-from app.services.user_services import create_user
+from app.schemas.user_schemas import UserCreate,UserProfileSchema
+from app.services.user_services import create_user,get_current_user
+
 
 app = APIRouter()
 
@@ -13,4 +14,8 @@ async def signup(request: UserCreate):
         return {"message": error.msg, "statusCode": error.code}
     
     return {"message": "user created successfully", "statusCode": 201, "data": user}
+
+@app.get("/api/user/profile")
+async def user_profile(current_user: UserProfileSchema = Depends(get_current_user)):
+    return {current_user}
     
