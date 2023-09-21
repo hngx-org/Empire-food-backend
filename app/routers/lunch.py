@@ -24,7 +24,7 @@ async def get_lunch(lunch_id: int, user_id: int = Depends(authenticate), db: Ses
     else:
         response = {
                     "message": "Lunch request created successfully",
-                    "status_code": 201,
+                    "statusCode": 201,
                     "data": {
                              "receiver_id": lunch.receiver_id,
                              "sender_id": lunch.sender_id,
