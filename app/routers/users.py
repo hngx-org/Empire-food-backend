@@ -33,9 +33,6 @@ async def search(name_or_email: str, db: Session = Depends(get_db), current_user
 
 @app.get("/user/all", response_model=UserSearchResponse)
 def all_org_users(db: Session = Depends(get_db), current_user: User = Depends(authenticate)):
-    try:
-        users = get_org_users(db, current_user.org_id)
-        return UserSearchResponse(message="User search successful", statusCode=200, data=jsonable_encoder(users))
-    except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Internal server error: {str(e)}")
+    """Returns all users linked to the organization of the current user"""
+    users = get_org_users(db, current_user.org_id)
+    return UserSearchResponse(message="User search successful", statusCode=200, data=jsonable_encoder(users))

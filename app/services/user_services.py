@@ -40,6 +40,7 @@ def get_user_by_email(db: Session, email: str):
 
 
 def get_org_users(db: Session, org_id: int) -> list[UserSearchSchema]:
+    """Fetches users linked to an organization"""
     org_users = db.query(User).filter(User.org_id == org_id).all()
 
     return org_users
