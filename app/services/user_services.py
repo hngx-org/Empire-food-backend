@@ -45,19 +45,22 @@ def compare_password(password, hashed_password):
     return pwd_context.verify(password, hashed_password)
 
 
-#expects the oauth2_scheme  
-"""
-    retreive user_id from verified token and queries the data base for the user info.
-    returns user data if found, raise a HTTPException if not.
+def get_current_user(token: str, db: Session = Depends(get_db)):
+     """
+    Retrieves a user based on an access token.
+
+    :param token: The access token for authentication.
+    :param db: Database session.
+
+    :return: User object if found, None if the user does not exist or the token is invalid.
     """
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-  data = verify_access_token(token)
-  user_id = data.get("id")
-  user = db.query(User).filter(User.id == user_id).first()
-  if user:
-    return user
-  else:
-   raise  HTTPException(status_code=400, detail="User does not exist.")
-  
+    try:
+        data = verify_access_token(token)
+        user_id = data.id
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=400, detail="User does not exist.")
+        return user
+
   
   
