@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from fastapi import HTTPException,Depends
+from fastapi import HTTPException, Depends
 from app.schemas.user_schemas import UserCreate, UserSearchSchema
 from app.models.user_models import User
 import re
@@ -55,7 +55,7 @@ def get_user_by_email(db: Session, email: str):
     pass
 
 
-def search_user_by_name_or_email(db: Session, name_or_email: str):
+def search_user_by_name_or_email(db: Session, name_or_email: str = Depends(authenticate)):
     # Query the database to find users whose first_name, last_name, or email contains the query
     users = db.query(User).filter(
         (User.first_name.ilike(f'%{name_or_email}%')) |
@@ -63,7 +63,16 @@ def search_user_by_name_or_email(db: Session, name_or_email: str):
         (User.email.ilike(f'%{name_or_email}%'))
     ).all()
 
-    return users
+    users_response = [UserSearchSchema(
+        id=user.id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        profile_pic=user.profile_pic,
+        email=user.email,
+        phone=user.phone,
+        is_admin=user.is_admin
+    ) for user in users]
+    return users_response
 
 
 def hash_password(password):
@@ -95,6 +104,3 @@ def get_current_user(token: str = Depends(authenticate), db: Session = Depends(g
     if not user:
         raise HTTPException(status_code=400, detail="User does not exist.")
     return user
-
-
-
