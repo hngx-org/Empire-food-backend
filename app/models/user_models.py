@@ -31,8 +31,6 @@ class User(Base):
 
     organization = relationship("Organization", back_populates="users")
     withdrawals = relationship("Withdrawal", back_populates="user")
-    sender_lunches = relationship("Lunch", back_populates="sender")
-    receiver_lunches = relationship("Lunch", back_populates="receiver")
 
 
 class Withdrawal(Base):
