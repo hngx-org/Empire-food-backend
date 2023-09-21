@@ -13,4 +13,4 @@ async def signup(request: UserCreate):
         return {"message": error.msg, "statusCode": error.code}
     
     return {"message": "user created successfully", "statusCode": 201, "data": user}
-    
+
