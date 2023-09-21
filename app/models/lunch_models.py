@@ -1,15 +1,13 @@
 from sqlalchemy import Column, Integer, String, Boolean,Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from uuid import uuid4 as uuid
-#from datetime import datetime
 from app.db.database import Base
 
 
 
 class Lunch(Base):
   __tablename__ = 'lunches'
-  id = Column(Integer, primary_key=True, index=True, default=uuid)
+  id = Column(Integer, primary_key=True, index=True)
   org_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"))
   sender_id = Column(Integer)
   receiver_id = Column(Integer)
