@@ -41,8 +41,10 @@ def create_database():
 
 
 def get_db():
+    create_database()
     db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    # try:
+    #     yield db
+    # finally:
+    #     db.close()
+    return db
