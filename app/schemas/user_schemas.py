@@ -44,3 +44,11 @@ class UserLogin(BaseModel):
 class TokenRequest(BaseModel):
     refresh_token: str
 
+#Pydantic model for StaffSignupRequest
+class StaffSignupRequest(BaseModel):
+    email: str
+    password: str
+    otp_token: str
+    first_name: str = ""
+    last_name: str = ""
+    phone_number: str = ""
