@@ -4,7 +4,9 @@ from app.schemas.user_schemas import UserCreate
 import re
 from app.settings.settings import EMAIL_REGEX
 from app.Responses.response import Response
-from app.db import user_db
+from app.models.user_models import Users
+from datetime import datetime
+from uuid import uuid4
 from passlib.context import CryptContext
 
 
@@ -14,8 +16,15 @@ def create_user(db:Session, user:UserCreate):
   """
     Create a new user and add them to the database.
     """
+
+   # Generate a unique user_id using uuid4
+  user_id = str(uuid4())
+
+    # Get the current timestamp
+  now = datetime.utcnow()
+  
     # Create a new User model instance
-  db_user = User(
+  db_user = Users(
         first_name=user.first_name,
         last_name=user.last_name,
         email=user.email,
@@ -32,7 +41,7 @@ def create_user(db:Session, user:UserCreate):
         currency_code=user.currency_code,
     )
 
-      # Add the user to the database session and commit the transaction
+  # Add the user to the database session and commit the transaction
   db.add(db_user)
   db.commit()
   db.refresh(db_user)
