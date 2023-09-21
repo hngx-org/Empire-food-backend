@@ -6,7 +6,7 @@ from invoke import run as local
 from fabric.connection import Context
 
 
-DEPLOY_DIR = "/home/mypythtesting/empire_backend"
+DEPLOY_DIR = "/app/backend"
 USER = getenv("REMOTE_USER", "mypythtesting")
 
 

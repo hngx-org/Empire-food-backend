@@ -3,8 +3,8 @@
 # Replace these variables with your specific values
 APP_NAME="empire_free_lunch"
 USER="mypythtesting"
-APP_DIRECTORY="/home/mypythtesting/empire_backend"
-VENV_PATH="/home/mypythtesting/empire_backend/.venv"
+APP_DIRECTORY="/app/backend"
+VENV_PATH="/app/backend/.venv"
 UVICORN_OPTIONS="--host 0.0.0.0 --port 8000"
 # Create a systemd service unit file
 echo "[Unit]
@@ -18,6 +18,8 @@ Restart=always
 WantedBy=multi-user.target" | sudo tee /etc/systemd/system/$APP_NAME.service > /dev/null
 # Reload systemd
 sudo systemctl daemon-reload
+#stop the service
+sudo systemctl stop $APP_NAME
 # Start and enable the service
 sudo systemctl start $APP_NAME
 sudo systemctl enable $APP_NAME

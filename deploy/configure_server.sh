@@ -1,6 +1,6 @@
 #!/bin/bash
 
-fastapi_dir="/home/mypythtesting/empire_backend"
+fastapi_dir="/app/backend"
 # Define the FastAPI application directory
 app_dir="$fastapi_dir"
 
