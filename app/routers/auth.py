@@ -63,5 +63,6 @@ def refresh_token(token_request: user_schemas.TokenRequest):
 
     return {
         "message": "User authenticated successfully.",
+        "status_code": 200,
         "data": {"access_token": access_token},
     }
