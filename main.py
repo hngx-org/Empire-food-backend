@@ -11,7 +11,7 @@ api.include_router(user_app)
 
 app = FastAPI()
 
-app.include_router(lunch_app)
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,6 +24,7 @@ app.add_middleware(
 )
 
 app.include_router(api)
+app.include_router(lunch_app)
 
 @app.get("/")
 async def index():

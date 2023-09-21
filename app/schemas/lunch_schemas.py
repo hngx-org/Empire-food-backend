@@ -9,7 +9,7 @@ class SendLunch(BaseModel):
     json_schema_extra = {
       "example": {
         "receiver_id": 23,
-        "quantity": 5,
+        "quantity": 4,
         "note": "Special instructions for the lunch"
       }
     }
