@@ -18,9 +18,13 @@ def get_user_by_email(db:Session, email:str):
 
 
 def validate_email():
-  
+
     pass
 
 def validate_passowrd():
-  
+
     pass
+
+
+
+
