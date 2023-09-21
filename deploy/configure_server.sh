@@ -20,7 +20,7 @@ sudo printf %s "server {
     index index.html;
 #    server_name freelunch.com www.freelunch.com;
     server_name 35.193.20.212;
-    location /api {
+    location ~ /api {
         proxy_pass http://127.0.0.1:8000;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
