@@ -20,7 +20,7 @@ class GetLunchResponse(BaseModel):
         json_schema_extra = {
             "example": {
                 "message": "Lunch request created successfully",
-                "statusCode": 201,
+                "status_code": 201,
                 "data": {
                     "receiverId": 11,
                     "senderId": 7,
