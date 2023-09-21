@@ -50,6 +50,7 @@ def login(credentials: user_schemas.UserLogin, db: Session = Depends(get_db)):
 
     return {
         "message": "User authenticated successfully.",
+        "status_code": 200,
         "data": user_schemas.LoginResponse(**data),
     }
 
