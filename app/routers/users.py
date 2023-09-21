@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.schemas.user_schemas import UserCreate, UserResponseSchema, UserProfileSchema
-from app.services.user_services import create_user, get_current_user
+from app.services.user_services import create_user, get_current_user, search_user_by_name_or_email
 
 app = APIRouter()
 
@@ -27,7 +27,7 @@ async def user_profile(current_user: UserProfileSchema = Depends(get_current_use
 @app.get("/user/search/{name_or_email}")
 async def search(name_or_email: str, db: Session = Depends(get_db)):
     try:
-        users = [] # stub: actual implementation will be added here
+        users = search_user_by_name_or_email(db, name_or_email)
         return {"message": "User search successful", "statusCode": 200, "data": users}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
