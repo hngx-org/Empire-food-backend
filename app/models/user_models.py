@@ -31,6 +31,8 @@ class User(Base):
 
     organization = relationship("Organization", back_populates="users")
     withdrawals = relationship("Withdrawal", back_populates="user")
+    sender_lunches = relationship("Lunch", back_populates="sender", foreign_keys="[Lunch.sender_id]",)
+    receiver_lunches = relationship("Lunch", back_populates="receiver", foreign_keys="[Lunch.receiver_id]")
 
 
 class Withdrawal(Base):
@@ -38,7 +40,7 @@ class Withdrawal(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
-    status = Column(Enum("redeemed", "not_redeemed", name="withdrawal_status"), nullable=False)
+    status = Column(Enum("success", "pending", name="withdrawal_status"), nullable=False)
     amount = Column(DECIMAL(10, 2), nullable=False)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
