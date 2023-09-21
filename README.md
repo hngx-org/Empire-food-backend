@@ -12,9 +12,22 @@ Here is is a placeholder **[link]()** to the live version of our application.
 ### Windows
 
 1. **Install Python:** Download and install Python from [python.org](https://www.python.org/downloads/).
+
 2. **Clone the Repository:** Use `git clone` to clone the application [repository](https://github.com/blacdev/HNG_Stage_Two.git).
 
-3. **Install Dependencies:** Navigate to the project directory and run the following command to install required packages:
+3. **Install Virtual Enviroment:** Navigate to the project directory and run the following command to install virtual enviroment:
+
+            py -m pip install --user virtualenv
+        
+4. **Create  virtual Enviroment:** run the following command to create a virtual enviroment:
+
+            py -m venv env
+
+5. **Activate  virtual Enviroment:** run the following command to create a virtual enviroment:
+
+            .\env\Scripts\activate
+
+6. **Install Dependencies:** Navigate to the project directory and run the following command to install required packages:
 
             pip install -r requirements.txt
 
@@ -24,9 +37,21 @@ Here is is a placeholder **[link]()** to the live version of our application.
 
 2. **Clone the Repository:** Use `git clone` to clone the application [repository](https://github.com/blacdev/HNG_Stage_Two.git).
 
-3. **Install Dependencies:** Navigate to the project directory and run the following command to install required packages:
+3. **Install Virtual Enviroment:** Navigate to the project directory and run the following command to install virtual enviroment:
 
-          pip install -r requirements.txt
+            python3 -m pip install --user virtualenv
+        
+4. **Create  virtual Enviroment:** run the following command to create a virtual enviroment:
+
+            python3 -m venv env
+
+5. **Activate  virtual Enviroment:** run the following command to create a virtual enviroment:
+
+            source env/bin/activate
+
+6. **Install Dependencies:** Navigate to the project directory and run the following command to install required packages:
+
+            pip install -r requirements.txt
 
 ## Database Setup
 
