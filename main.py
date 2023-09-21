@@ -2,11 +2,15 @@ from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from app.routers.users import app as user_app
+from app.routers.bank_account import router as bank_details
 
 
 api = APIRouter(prefix="/api")
 
 api.include_router(user_app)
+
+# Added by Neon
+api.include_router(bank_details)
 
 app = FastAPI()
 
