@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 
-class launches():
+class Lunches():
   id = Column(Integer, primary_key=True, default=uuid)
   senderId = Column(String(50)) 
   receiverId = Column(String(50))
@@ -12,4 +12,3 @@ class launches():
   redeemed = Column(Boolean)
   created_at = Column(DateTime, default=datetime.utcnow())
   note = Column(Text)
-
