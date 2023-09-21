@@ -5,10 +5,10 @@ from app.routers.auth import app as auth_router
 from app.routers.users import app as user_app
 
 
-api = APIRouter(prefix="/api")
+v1 = APIRouter(prefix="/api/v1")
 
-api.include_router(user_app)
-api.include_router(auth_router)
+v1.include_router(user_app)
+v1.include_router(auth_router)
 
 app = FastAPI()
 
@@ -23,7 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(api)
+app.include_router(v1)
 
 
 @app.get("/health")
