@@ -1,6 +1,7 @@
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+from app.db import database
 from app.routers.users import app as user_app
 
 
@@ -23,7 +24,10 @@ app.add_middleware(
 
 app.include_router(api)
 
-@app.get("/health")
+# Creste the database
+database.create_database()
+
+@app.get("/")
 async def health():
     return {"status": "ok"}
 

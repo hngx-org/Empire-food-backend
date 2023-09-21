@@ -4,7 +4,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from decouple import config
 
-
 def get_db_engine():
     DB_TYPE = config("DB_TYPE")
     DB_NAME = config("DB_NAME")
@@ -13,6 +12,8 @@ def get_db_engine():
     DB_HOST = config("DB_HOST")
     DB_PORT = config("DB_PORT")
     MYSQL_DRIVER = config("MYSQL_DRIVER")
+
+    DATABASE_URL = ""
 
     if DB_TYPE == "mysql":
         DATABASE_URL = f"mysql+{MYSQL_DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"

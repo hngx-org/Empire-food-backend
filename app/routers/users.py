@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends , HTTPException, Request
 from app.schemas.user_schemas import UserCreate
 from app.services.user_services import create_user
+from app.models.user_models import User
 
 app = APIRouter()
-
 
 
 @app.post("/auth/user/signup")
