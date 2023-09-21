@@ -8,10 +8,8 @@ def send_email(message : str , subject : str , to_email : str):
     pass
 
 def authenticate(token: str = Depends(oauth2_scheme)):
-    if token is None or not token.startswith("Bearer "):
+    if token is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    token = token.split(" ")[1] 
-    
     
     data = verify_token(token)
     return data

@@ -1,7 +1,7 @@
 import time
 from datetime import datetime , timedelta
 
-from fastapi import APIRouter , HTTPException , status
+from fastapi import APIRouter , HTTPException , status , Depends
 
 from jose import jwt , JWTError
 from app.settings import settings
@@ -43,10 +43,11 @@ def verify_token(token: str) -> int:
             detail="Invalid token"
         )
         
+'''
 def refresh_access_token(refresh_token, db: Session = Depends(get_db)):
     id = verify_token(refresh_token)
 
-    user = db.query(User).filter(User.id == ).first()
+    user = db.query(User).filter(User.id == id ).first()
 
     if not user:
         raise HTTPException(detail="User does not exist.", status_code=404)
@@ -57,3 +58,5 @@ def refresh_access_token(refresh_token, db: Session = Depends(get_db)):
         )
 
     return create_access_token(id)
+    
+'''
