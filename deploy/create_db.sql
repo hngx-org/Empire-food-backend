@@ -1,8 +1,10 @@
 -- Drop the database if it already exists
 DROP DATABASE IF EXISTS free_lunch_db;
+
 -- Create the database
 CREATE DATABASE free_lunch_db;
 USE free_lunch_db;
+
 -- Drop the tables if they already exist
 DROP TABLE IF EXISTS organizations;
 DROP TABLE IF EXISTS users;
@@ -10,6 +12,7 @@ DROP TABLE IF EXISTS organization_lunch_wallets;
 DROP TABLE IF EXISTS organization_invites;
 DROP TABLE IF EXISTS withdrawals;
 DROP TABLE IF EXISTS lunches;
+
 -- Create the 'organizations' table
 CREATE TABLE organizations (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -20,6 +23,7 @@ CREATE TABLE organizations (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     is_deleted BOOLEAN DEFAULT FALSE
 );
+
 -- Create the 'users' table
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -44,6 +48,7 @@ CREATE TABLE users (
     is_deleted BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE
 );
+
 -- Create the 'organization_lunch_wallets' table
 CREATE TABLE organization_lunch_wallets (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -54,6 +59,7 @@ CREATE TABLE organization_lunch_wallets (
     is_deleted BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE
 );
+
 -- Create the 'organization_invites' table
 CREATE TABLE organization_invites (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -66,6 +72,7 @@ CREATE TABLE organization_invites (
     is_deleted BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE
 );
+
 -- Create the 'withdrawals' table
 CREATE TABLE withdrawals (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -77,6 +84,7 @@ CREATE TABLE withdrawals (
     is_deleted BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
 -- Create the 'lunches' table
 CREATE TABLE lunches (
     id INT AUTO_INCREMENT PRIMARY KEY,

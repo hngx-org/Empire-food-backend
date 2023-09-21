@@ -1,9 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-
+from app.schemas.user_schemas import UserCreate
+from app.services.user_services import create_user
 from app.db.database import get_db
-from app.middleware.authenticate import (
+from app.settings.settings import Settings
+from app.middleware.jwt_handler import create_access_token, create_refresh_token, refresh_access_token
+
+(
     create_access_token,
     create_refresh_token,
     refresh_access_token,
@@ -18,6 +22,18 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
+
+
+@app.post("/user/signup")
+async def signup(request: UserCreate, db: Session = Depends(get_db)):
+    try:
+        user = create_user(db,request)
+
+        return {"message": "user created successfully", "statusCode": 201, "data": user}
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail=f"failed to create user")
+
 
 
 @app.post("/login", status_code=200)
