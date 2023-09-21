@@ -18,19 +18,13 @@ async def send_lunch( data:SendLunch,user_id:int=Depends(authenticate), db:Sessi
     if not auth_user:
         raise HTTPException(status_code=403,detail="An error Occured; user not found")
     else:
-      #check for the balance sufficiency and total max amount to send
-      balance = auth_user["lunch_credit_balance"]
-      sendchecks = data.model_dump(exclude_unset=True)
-      sendAmount =sendchecks["quantity"]
-      if balance < sendAmount:
-          raise HTTPException(status_code=404,detail="An error Occured; amount greater than balance")
-      else:
-        resp = sendLunch(db=db,data=data,user_id=user_id)
-        if resp:
-            return {
+      #check for the total max amount, then send
+      resp = sendLunch(db=db,data=data,user_id=user_id)
+      if resp:
+          return {
             "message": "Lunch request created successfully",
             "statusCode": 201,
             "data": jsonable_encoder(resp,exclude={"id","is_deleted","redeemed"})
           }
-        else:
-           raise HTTPException(status_code=404,detail="An error Occured; max of 4 lunch can be sent once")
+      else:
+          raise HTTPException(status_code=404,detail="An error Occured; max of 4 lunch can be sent once")
