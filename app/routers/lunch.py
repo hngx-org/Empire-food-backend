@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends,HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
-from app.db.database import get_db, create_database
+from app.db.database import get_db
 from  app.schemas.lunch_schemas import SendLunchResponse,SendLunch
 from app.services.lunch_services import sendLunch
 from app.middleware.authenticate import authenticate
@@ -11,10 +11,7 @@ from app.models.user_models import User
 
 app = APIRouter()
 
-#create_database()
-
-
-@app.post("/api/lunch/send", response_model=SendLunchResponse)
+@app.post("/lunch/send", response_model=SendLunchResponse)
 async def send_lunch( data:SendLunch,user_id:int=Depends(authenticate), db:Session=Depends(get_db)):
     # query the user model to retrieve the authenticated user
     auth_user=db.query(User).filter(User.id==user_id).first()
@@ -36,4 +33,4 @@ async def send_lunch( data:SendLunch,user_id:int=Depends(authenticate), db:Sessi
             "data": jsonable_encoder(resp,exclude={"id","is_deleted","redeemed"})
           }
         else:
-           raise HTTPException(status_code=404,detail="An error Occured; max of 4  lunch can be sent once")
+           raise HTTPException(status_code=404,detail="An error Occured; max of 4 lunch can be sent once")
