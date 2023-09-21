@@ -1,4 +1,7 @@
-from decouple import config
+class Settings:
+    secret_key: str = "HI5HL3V3L$3CR3T"
+    algorithm: str = "HS256"
+    access_tok_expire_minutes: int = 3600
 
 
 EMAIL_REGEX = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
