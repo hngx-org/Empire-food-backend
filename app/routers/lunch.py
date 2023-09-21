@@ -16,7 +16,7 @@ async def send_lunch( data:SendLunch,user_id:int=Depends(authenticate), db:Sessi
     # query the user model to retrieve the authenticated user
     auth_user=db.query(User).filter(User.id==user_id).first()
     if not auth_user:
-        raise HTTPException(status_code=403,detail="An error Occured; user not found")
+        raise HTTPException(status_code=404,detail="An error Occured; user not found")
     else:
       #check for the total max amount, then send
       resp = sendLunch(db=db,data=data,user_id=user_id)
