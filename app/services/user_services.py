@@ -1,5 +1,6 @@
-
 from sqlalchemy.orm import Session
+
+from app.models.user_models import User
 from app.schemas.user_schemas import UserCreate
 import re
 from app.settings.settings import EMAIL_REGEX
@@ -7,24 +8,20 @@ from app.Responses.response import Response
 from app.db import user_db
 from passlib.context import CryptContext
 
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-def create_user(db:Session, user:UserCreate):
-  
-  pass
-  
 
 
+def create_user(db: Session, user: UserCreate):
+    pass
 
 
-def get_user(db:Session, user_id:int):
+def get_user(db: Session, user_id: int):
+    pass
 
-  pass
 
+def get_user_by_email(db: Session, email: str):
+    pass
 
-def get_user_by_email(db:Session, email:str):
-
-  pass
 
 def search_user_by_name_or_email(db: Session, name_or_email: str):
     # Query the database to find users whose first_name, last_name, or email contains the query
@@ -35,6 +32,7 @@ def search_user_by_name_or_email(db: Session, name_or_email: str):
     ).all()
 
     return users
+
 
 def hash_password(password):
     """

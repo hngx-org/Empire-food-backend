@@ -31,8 +31,8 @@ class User(Base):
 
     organization = relationship("Organization", back_populates="users")
     withdrawals = relationship("Withdrawal", back_populates="user")
-    sender_lunches = relationship("Lunch", back_populates="sender")
-    receiver_lunches = relationship("Lunch", back_populates="receiver")
+    sender_lunches = relationship("Lunch", back_populates="sender", foreign_keys="[Lunch.sender_id]",)
+    receiver_lunches = relationship("Lunch", back_populates="receiver", foreign_keys="[Lunch.receiver_id]")
 
 
 class Withdrawal(Base):
