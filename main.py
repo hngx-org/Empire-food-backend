@@ -5,7 +5,6 @@ import uvicorn
 #import  your routers below and follow the format 
 from app.routers.users import app as user_app
 from app.routers.auth import app as auth_router
-from app.routers.lunch import app as lunch_app
 from app.routers.organizations import router as org_signup
 from app.routers.lunch import app as lunch_app
 from app.routers.bank_account import router as bankdetails_app
