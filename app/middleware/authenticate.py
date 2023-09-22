@@ -13,7 +13,7 @@ def authenticate(access_token: str = Header(), db: Session= Depends(get_db)):
     if access_token is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
     
-    user_id = verify_token(access_token)
+    user_id = verify_token(access_token).get('id')
     
     try:
         return db.query(User).filter(User.id == user_id).first()
