@@ -21,17 +21,16 @@ def verify_password(plain_password, hashed_password):
 
 @app.post("/user/signup", response_model=ResponseClass)
 async def signup(request: UserCreate, db: Session = Depends(get_db)):
-    try:
-        user = create_user(db,request)
+        
+        user, exception = create_user(db,request)
+        if exception:
+            raise exception
 
         return ResponseClass(message = 'User registered successfully',
                         statusCode= 201,
                         data= None
                     )
   
-    except Exception as e:
-        print(e)
-        raise HTTPException(status_code=500, detail=f"failed to create user")
 
 
 
@@ -72,7 +71,7 @@ def login(credentials: user_schemas.UserLogin, db: Session = Depends(get_db)):
                     )
 
 
-@app.post("/refresh/{id}", status_code=200)
+@app.post("/refresh", status_code=200)
 def refresh_token(id:int, refresh_token:str= Header(), db: Session = Depends(get_db)):
     """Refreshes user's access token"""
     
