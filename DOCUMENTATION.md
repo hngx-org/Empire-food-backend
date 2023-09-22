@@ -2,7 +2,7 @@
 
 This is a FastAPI-built API for a LUNCH APP that allows staff of an organization to share lunch with one another.
 
-#TEAM NAME
+# TEAM NAME
 EMPIRE
 
 Detailed information about each **endpoints** can be found below.
@@ -119,4 +119,4 @@ Here are some examples of how to use the API:
 }
 ```
 
-##THANK YOU!!!
+## THANK YOU!!!
