@@ -52,3 +52,5 @@ def get_db_unyield():
     create_database()
     db = SessionLocal()
     return db
+
+
