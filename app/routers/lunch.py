@@ -17,7 +17,7 @@ from app.services.lunch_services import fetch_lunch
 
 app = APIRouter()
 
-@app.get("lunch/{lunch_id}", response_model=GetLunchResponse)
+@app.get("/lunch/{lunch_id}", response_model=GetLunchResponse)
 async def get_lunch(lunch_id: int, user: User = Depends(authenticate), db: Session = Depends(get_db)):
     try:
         lunch = fetch_lunch(db, lunch_id)
@@ -30,7 +30,7 @@ async def get_lunch(lunch_id: int, user: User = Depends(authenticate), db: Sessi
 
 
 # Redeem lunch by updating 'redeemed' field
-@app.put('lunch/redeem/')
+@app.put('/lunch/redeem/')
 async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(authenticate), session = Depends(get_db)):
     """
     Redeem lunch by updating 'redeemed' field

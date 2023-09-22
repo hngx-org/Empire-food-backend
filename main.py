@@ -4,6 +4,7 @@ import uvicorn
 from app.routers.auth import app as auth_router
 from app.routers.lunch import app as lunch_app
 from app.routers.users import app as user_app
+from app.db.database import create_database
 
 
 v1 = APIRouter(prefix="/api/v1")
@@ -20,6 +21,7 @@ async def health():
 
 app = FastAPI()
 
+create_database()
 
 app.add_middleware(
     CORSMiddleware,
