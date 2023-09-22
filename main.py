@@ -13,6 +13,7 @@ from decouple import config
 prod = True if config("PROD", default = "dev")  == "PRODUCTION" else False
 
 v1 = APIRouter(prefix="/api/v1")
+
 ############################# include all routers here #############################
 v1.include_router(lunch_app)
 v1.include_router(user_app)
@@ -20,6 +21,7 @@ v1.include_router(auth_router)
 v1.include_router(org_signup)
 v1.include_router(bankdetails_app)
 ####################################################################################
+
 @v1.get("/health")
 async def health():
     return {"status": "ok"}
