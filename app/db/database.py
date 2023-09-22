@@ -46,3 +46,11 @@ def get_db():
         yield db
     finally:
         db.close()
+    return db
+
+def get_db_unyield():
+    create_database()
+    db = SessionLocal()
+    return db
+
+
