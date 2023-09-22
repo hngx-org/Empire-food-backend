@@ -38,7 +38,6 @@ def verify_token(token: str) -> int:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Token expired!") 
-        print(data)
         return data['user']
     except JWTError:
         raise HTTPException(

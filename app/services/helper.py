@@ -163,4 +163,4 @@ def send_otp_to_email(sender, email, org_id, org_name):
     """
 
     # Call the send_email function to send the email
-    return send_email(email, sender, subject, "", html_content), otp
+    # return send_email(email, sender, subject, "", html_content), otp

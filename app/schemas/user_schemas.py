@@ -40,8 +40,6 @@ class UserProfileSchema(UserSearchSchema):
 class UserLoginSchema(BaseModel):
     id: int
     email: EmailStr
-    password: str
-
     access_token: Optional[str] = None
     refresh_token: Optional[str] = None
     is_admin: bool = False
