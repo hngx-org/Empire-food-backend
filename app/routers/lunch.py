@@ -22,7 +22,7 @@ async def send_lunch( data:SendLunch,current_user:User=Depends(authenticate), db
         Send lunch to an authenticated user.
     """
     # query the user model to retrieve the authenticated user
-    user_dict = current_user.model_dump(exclude_unset=True)
+    user_dict = jsonable_encoder(current_user)
     user_id = user_dict["id"]
     auth_user=db.query(User).filter(User.id==user_id).first()
     if not auth_user:
