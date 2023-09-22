@@ -1,6 +1,7 @@
 #sendlunch services created by @dyagee
 
 
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from app.models.lunch_models import Lunch
 from app.schemas.lunch_schemas import SendLunch
@@ -16,6 +17,18 @@ def sendLunch(db:Session, data:SendLunch, user_id:int):
   if res:
     return res
   return False
+def get_user_lunches(db: Session, user_id: int):
+    
+    lunches = db.query(Lunch)\
+                .filter(
+                    or_(
+                        Lunch.receiver_id == user_id, 
+                        Lunch.sender_id == user_id
+                    )
+                )\
+                .all()
+
+    return lunches
 
 def fetch_lunch(db: Session, lunch_id: int):
     # Perform check for null lunch_id value
