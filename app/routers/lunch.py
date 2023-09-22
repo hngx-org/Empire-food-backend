@@ -2,7 +2,7 @@
 
 from app.Responses.response import GetLunchResponse
 from app.db.database import get_db
-from  app.schemas.lunch_schemas import SendLunchResponse,SendLunch
+from  app.schemas.lunch_schemas import SendLunch
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import Annotated, List
 from fastapi.encoders import jsonable_encoder
@@ -21,8 +21,8 @@ async def send_lunch( data:SendLunch,current_user:User=Depends(authenticate), db
     """
         Send lunch to an authenticated user.
     """
-    # query the user model to retrieve the authenticated user
-    #user_dict = jsonable_encoder(current_user)
+    # extract sender id and send the lunch
+    
     user_id = current_user.id
 
     #check for the total max amount, then send

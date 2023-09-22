@@ -13,16 +13,22 @@ class SendLunch(BaseModel):
       "example": {
         "receiver_id": 23,
         "quantity": 4,
-        "note": "Special instructions for the lunch"
+        "note": "Special note for the lunch"
       }
     }
   
 
 
 class SendLunchResponseSchema(BaseModel):
-  message: str
-  statusCode: int
-  data: dict
+  id: int
+  org_id: int 
+  receiver_id: int
+  sender_id: int
+  quantity: int
+  redeemed: bool
+  note: str
+  created_at: str
+  
 
 class LunchResponseSchema(BaseModel):
     receiver_id: int
