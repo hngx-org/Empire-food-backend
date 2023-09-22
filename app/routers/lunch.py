@@ -30,7 +30,7 @@ async def get_lunch(lunch_id: int, user: User = Depends(authenticate), db: Sessi
 
 
 # Redeem lunch by updating 'redeemed' field
-@app.put('/api/lunch/redeem/')
+@app.put('lunch/redeem/')
 async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(authenticate), session = Depends(get_db)):
     """
     Redeem lunch by updating 'redeemed' field
