@@ -9,7 +9,7 @@ from app.routers.lunch import app as lunch_app
 from app.db.database import create_database
 from decouple import config
 
-prod = True if config("PROD") == "PRODUCTION" else False
+prod = True if config("PROD", default = "dev")  == "PRODUCTION" else False
 
 v1 = APIRouter(prefix="/api/v1")
 ############################# include all routers here #############################
@@ -27,7 +27,7 @@ app = FastAPI()
 
 if not prod:
     create_database()
-    
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
