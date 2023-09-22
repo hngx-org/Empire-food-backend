@@ -20,13 +20,7 @@ async def get_all_lunches(
         Params: user_id
     """
 
-    user_id = user.id
-    
-    is_valid_user = db.query(User).filter(User.id == user_id).first()
-
-    if not is_valid_user:
-        raise HTTPException(status_code=404, detail=f"User with id '{user_id}' not found")
-    
+    user_id = user.id    
 
     lunches = get_user_lunches(db=db, user_id=user_id)
 
