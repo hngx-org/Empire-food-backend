@@ -1,35 +1,26 @@
 #sendlunch router created by @dyagee
 
-from fastapi import APIRouter, Depends,HTTPException
-from fastapi.encoders import jsonable_encoder
-from sqlalchemy.orm import Session
 from app.Responses.response import GetLunchResponse
-from app.services.lunch_services import fetch_lunch
 from app.db.database import get_db
 from  app.schemas.lunch_schemas import SendLunchResponse,SendLunch
-from app.services.lunch_services import sendLunch
-from app.middleware.authenticate import authenticate
-from app.models.user_models import User
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import Annotated, List
-
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.models.lunch_models import Lunch
-
-from app.middleware.authenticate import authenticate
-
 from app.models.user_models import User
-from fastapi.encoders import jsonable_encoder
 from app.middleware.authenticate import authenticate
 from app.Responses.response import GetLunchResponse, GetAllLunchesResponse
-from app.services.lunch_services import fetch_lunch, get_user_lunches
+from app.services.lunch_services import sendLunch,fetch_lunch, get_user_lunches
 
 app = APIRouter(tags=["Lunch"])
 
 @app.post("/lunch/send", response_model=SendLunchResponse)
 async def send_lunch( data:SendLunch,current_user:User=Depends(authenticate), db:Session=Depends(get_db)):
+    """
+        Send lunch to an authenticated user.
+    """
     # query the user model to retrieve the authenticated user
     user_dict = current_user.model_dump(exclude_unset=True)
     user_id = user_dict["id"]
@@ -48,12 +39,11 @@ async def send_lunch( data:SendLunch,current_user:User=Depends(authenticate), db
       else:
           raise HTTPException(status_code=404,detail="An error Occured; max of 4 lunch can be sent once")
 
-@app.get("lunch/{lunch_id}", response_model=GetLunchResponse)
+
 @app.get("/lunch/all", status_code=200, response_model=GetAllLunchesResponse)
 async def get_all_lunches(
     user: User = Depends(authenticate),
-    db : Session = Depends(get_db)
-):
+    db : Session = Depends(get_db)):
     """
         Gets all Lunches that have not been redeemed by the user.
         Params: user_id
