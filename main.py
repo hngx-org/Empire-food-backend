@@ -6,7 +6,10 @@ from app.routers.lunch import app as lunch_app
 from app.routers.users import app as user_app
 from app.routers.organizations import router as org_signup
 from app.routers.lunch import app as lunch_app
+from app.db.database import create_database
+from decouple import config
 
+prod = True if config("PROD") == "PRODUCTION" else False
 
 v1 = APIRouter(prefix="/api/v1")
 ############################# include all routers here #############################
@@ -22,7 +25,9 @@ async def health():
 
 app = FastAPI()
 
-
+if not prod:
+    create_database()
+    
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
