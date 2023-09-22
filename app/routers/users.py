@@ -20,6 +20,11 @@ async def user_profile(current_user: User = Depends(authenticate)):
             "statusCode": 200,
             "data": jsonable_encoder(current_user)}
 
+@app.get("/auth/users", response_model = schemas.UserResponseSchema, status_code=status.HTTP_200_OK)
+def get_persons(db:Session = Depends(get_db)):
+    users = db.query(models.User).order_by(asc(models.User.id)).all()
+    return {"message": "All users", "statusCode": 200, "data": users}
+
 
 @app.get("/user/search/{name_or_email}", response_model=UserSearchResponse)
 async def search(name_or_email: str, db: Session = Depends(get_db), current_user: User = Depends(authenticate)):
