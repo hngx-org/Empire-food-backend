@@ -2,7 +2,7 @@ from datetime import datetime
 from app.middleware.authenticate import authenticate
 from app.schemas.withdrawal_schema import Withdraw
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from app.db.database import get_db
 from app.models import organization_models, user_models
 
@@ -20,7 +20,8 @@ def withdraw_request(withdraw: Withdraw,
     org_lunch_price = org.lunch_price
     if withdraw.amount > user.lunch_credit_balance:
         # return appropriate error response with either 403 or 404
-        return
+        raise HTTPException(
+            status_code=404, detail='Balance is less than withdraw amount')
     amount_left = user.lunch_credit_balance - withdraw.amount
     created_at = datetime.now()
     withdraw_amount = withdraw.amount * org_lunch_price
