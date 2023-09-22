@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-
+from typing import Optional
 
 
 class UserBase(BaseModel):
@@ -15,29 +15,33 @@ class UserCreate(UserLogin):
     last_name: str
     phone_number: str
 
+
+class UserResponseSchema(BaseModel):
+    id: str
+
 class UserSearchSchema(BaseModel):
     id: int
     first_name: str
     last_name: str
-    profile_pic: str |None = None
-    email: str
-    phone: str
-    is_admin: bool
+    profile_pic: Optional[str] = None
+
 
 
 class UserProfileSchema(UserSearchSchema):
     
-    bank_number: str |None = None
-    bank_code: str |None = None
-    bank_name: str |None = None
+    bank_number: Optional[str] = None
+    bank_code: Optional[str] = None
+    bank_name: Optional[str] = None
+
+
 
 
 
 class UserLoginSchema(BaseModel):
     id: int
     email: EmailStr
-    access_token: str | None = None
-    refresh_token: str | None = None
+    access_token: Optional[str] = None
+    refresh_token: Optional[str] = None
     is_admin: bool = False
 
 
