@@ -1,6 +1,6 @@
 from typing import Optional
 from app.schemas.user_schemas import UserCreate
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class CreateOrganizationSchema(BaseModel):
@@ -19,3 +19,7 @@ class OrganizationSchema(BaseModel):
 
 class CreateOrganizationUserSchema(UserCreate):
     otp_token: str
+
+    
+class OrganizationInviteRequestSchema(BaseModel):
+    email: EmailStr

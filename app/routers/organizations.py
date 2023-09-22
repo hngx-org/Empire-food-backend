@@ -1,13 +1,26 @@
 import datetime
+import secrets
+import string
+from app.middleware.authenticate import authenticate
 from app.services.user_services import hash_password, compare_password
 from app.middleware.jwt_handler import create_access_token
 from app.services.helper import generate_otp, send_otp_to_email, OTPVerificationMixin
-from fastapi import APIRouter, status, Depends, HTTPException
+from fastapi import APIRouter, Response, status, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.models.organization_models import  OrganizationInvite
-from app.schemas.organization_schemas import CreateOrganizationSchema, OrganizationSchema, CreateOrganizationUserSchema
+from app.schemas.organization_schemas import CreateOrganizationSchema, OrganizationSchema, CreateOrganizationUserSchema, OrganizationInviteRequestSchema
 from app.db.database import get_db
 from app.models import user_models, User
+
+
+def generate_token(length=32):
+    # Define the character set for the token (you can customize this)
+    characters = string.ascii_letters + string.digits  # Letters and digits
+
+    # Generate a random token using the defined character set
+    token = ''.join(secrets.choice(characters) for _ in range(length))
+
+    return token
 
 
 router = APIRouter(tags=["Organizations"], prefix="/organization")
@@ -58,3 +71,32 @@ async def register_user_in_organization(
     }
 
 
+@router.post("/invite", status_code=status.HTTP_200_OK)
+def create_organization_invite(
+    invite_data: OrganizationInviteRequestSchema,
+    db: Session = Depends(get_db),
+    user: User = Depends(authenticate)
+):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    # Check if the user is an admin
+    is_admin = user.is_admin 
+
+    if not is_admin:
+        raise HTTPException(status_code=401, detail="Only admin users can create organization invites")
+
+    # Calculate the expiration time (TTL) for the invite
+    expiration_time = datetime.utcnow() + datetime.timedelta(days=7)
+    
+    # Generate a new secure token
+    invite_token = generate_token()
+
+    # Create a new OrganizationInvite record in the database
+    new_invite = OrganizationInvite(email=invite_data.email, token=invite_token, ttl=expiration_time, org_id=user.org_id)
+    db.add(new_invite)
+    db.commit()
+    
+    ## send email functionality ##
+
+    return Response(status_code=status.HTTP_200_OK)

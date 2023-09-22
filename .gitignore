@@ -136,6 +136,7 @@ pyvenv.cfg
 menv
 include
 Scripts
+settings.ini
 
 # Spyder project settings
 .spyderproject
