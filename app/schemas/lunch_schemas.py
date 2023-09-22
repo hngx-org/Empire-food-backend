@@ -19,19 +19,10 @@ class SendLunch(BaseModel):
   
 
 
-class SendLunchResponse(BaseModel):
+class SendLunchResponseSchema(BaseModel):
   message: str
   statusCode: int
   data: dict
-
-  class Config:
-    json_schema_extra = {
-      "example": {
-        "message": "Lunch request created successfully",
-        "statusCode": 201,
-        "data": {}
-      }
-    }
 
 class LunchResponseSchema(BaseModel):
     receiver_id: int

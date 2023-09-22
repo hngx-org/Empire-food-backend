@@ -17,6 +17,7 @@ def sendLunch(db:Session, data:SendLunch, user_id:int):
   if res:
     return res
   return False
+
 def get_user_lunches(db: Session, user_id: int):
     
     lunches = db.query(Lunch)\

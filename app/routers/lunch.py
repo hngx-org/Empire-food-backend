@@ -11,7 +11,7 @@ from app.db.database import get_db
 from app.models.lunch_models import Lunch
 from app.models.user_models import User
 from app.middleware.authenticate import authenticate
-from app.Responses.response import GetLunchResponse, GetAllLunchesResponse
+from app.Responses.response import GetLunchResponse, GetAllLunchesResponse,SendLunchResponse
 from app.services.lunch_services import sendLunch,fetch_lunch, get_user_lunches
 
 app = APIRouter(tags=["Lunch"])
@@ -22,22 +22,20 @@ async def send_lunch( data:SendLunch,current_user:User=Depends(authenticate), db
         Send lunch to an authenticated user.
     """
     # query the user model to retrieve the authenticated user
-    user_dict = jsonable_encoder(current_user)
-    user_id = user_dict["id"]
-    auth_user=db.query(User).filter(User.id==user_id).first()
-    if not auth_user:
-        raise HTTPException(status_code=404,detail="An error Occured; user not found")
-    else:
-      #check for the total max amount, then send
-      resp = sendLunch(db=db,data=data,user_id=user_id)
-      if resp:
-          return {
+    #user_dict = jsonable_encoder(current_user)
+    user_id = current_user.id
+
+    #check for the total max amount, then send
+    resp = sendLunch(db=db,data=data,user_id=user_id)
+    if resp:
+      response = {
             "message": "Lunch request created successfully",
             "statusCode": 201,
-            "data": jsonable_encoder(resp,exclude={"id","is_deleted","redeemed"})
+            "data": jsonable_encoder(resp)
           }
-      else:
-          raise HTTPException(status_code=404,detail="An error Occured; max of 4 lunch can be sent once")
+      return response
+    else:
+      raise HTTPException(status_code=404,detail="An error Occured; max of 4 lunch can be sent once")
 
 
 @app.get("/lunch/all", status_code=200, response_model=GetAllLunchesResponse)
