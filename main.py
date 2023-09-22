@@ -13,12 +13,7 @@ v1 = APIRouter(prefix="/api/v1")
 v1.include_router(lunch_app)
 v1.include_router(user_app)
 v1.include_router(auth_router)
-<<<<<<< HEAD
-v1.include_router(lunch_router)
-||||||| 7ed8fd9
-=======
 v1.include_router(org_signup)
->>>>>>> f4ebd45b1da61adfe35793ad929561d5b5d3bdc5
 ####################################################################################
 @v1.get("/health")
 async def health():
