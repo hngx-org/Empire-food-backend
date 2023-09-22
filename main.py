@@ -2,7 +2,7 @@ from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-#import  your routers below and follow the format 
+#import  your routers below and follow the format
 from app.routers.users import app as user_app
 from app.routers.auth import app as auth_router
 from app.routers.organizations import router as org_signup
