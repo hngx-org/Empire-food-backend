@@ -1,10 +1,18 @@
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from app.models.lunch_models import Lunch
 
 
 def get_user_lunches(db: Session, user_id: int):
     
-    lunches = db.query(Lunch).filter(Lunch.receiver_id == user_id, Lunch.sender_id == user_id, Lunch.redeemed == False).all()
+    lunches = db.query(Lunch)\
+                .filter(
+                    or_(
+                        Lunch.receiver_id == user_id, 
+                        Lunch.sender_id == user_id
+                    )
+                )\
+                .all()
 
     return lunches
 
