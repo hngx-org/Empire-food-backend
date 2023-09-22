@@ -70,8 +70,6 @@ Here are some examples of how to use the API:
    "data":    None
 }
 ```
-
-```
 - Responses: 
 
 >Status code: 500
@@ -86,7 +84,7 @@ Here are some examples of how to use the API:
 ### 2\. User Login
 
 - `POST /api/v1/login`
-- 
+
 ```javascript
 {  
   "email": babadaju@gmail.com,
