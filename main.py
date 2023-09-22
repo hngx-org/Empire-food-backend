@@ -6,6 +6,7 @@ from app.routers.lunch import app as lunch_app
 from app.routers.users import app as user_app
 from app.routers.organizations import router as org_signup
 from app.routers.lunch import app as lunch_app
+from app.routers.bank_account import router as bankdetails_app
 from app.db.database import create_database
 from decouple import config
 
@@ -17,6 +18,7 @@ v1.include_router(lunch_app)
 v1.include_router(user_app)
 v1.include_router(auth_router)
 v1.include_router(org_signup)
+v1.include_router(bankdetails_app)
 ####################################################################################
 @v1.get("/health")
 async def health():
