@@ -52,8 +52,8 @@ def login(credentials: user_schemas.UserLogin, db: Session = Depends(get_db)):
                 detail="Invalid credentials.", status_code=status.HTTP_403_FORBIDDEN
             )
 
-    access_token = create_access_token({"id": user.id})
-    refresh_token = create_refresh_token({"id": user.id})
+    access_token = create_access_token(user.id)
+    refresh_token = create_refresh_token(user.id)
 
     user.refresh_token = refresh_token  
     db.commit()
