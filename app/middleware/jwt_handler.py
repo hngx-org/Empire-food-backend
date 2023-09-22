@@ -11,7 +11,7 @@ setting = Settings()
 
 def create_token(id: int , expiry_time:int) -> str:
     payload = {
-        "user": id,
+        "id": id,
         "expires": time.time() + expiry_time
     }
     token = jwt.encode(payload, setting.secret_key, setting.algorithm)
@@ -38,7 +38,7 @@ def verify_token(token: str) -> int:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Token expired!") 
-        return data['user']
+        return data['id']
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
