@@ -1,9 +1,22 @@
-class Response:
-    messaage: str
-    statusCode: int
-    data: dict
+from pydantic import BaseModel
+from app.schemas.user_schemas import UserProfileSchema, UserLoginSchema, UserSearchSchema
+from app.schemas.lunch_schemas import LunchResponseSchema
 
-    def __init__(self, msg, code, data = None):
-        self.msg = msg
-        self.code = code
-        self.data = data
+class ResponseClass(BaseModel):
+    message: str
+    statusCode: int
+    data: dict |None
+
+
+class UserResponse(ResponseClass):
+    data: UserProfileSchema
+
+
+class UserLoginResponse(ResponseClass):
+    data: UserLoginSchema
+
+class UserSearchResponse(ResponseClass):
+    data: list[UserSearchSchema]
+
+class GetLunchResponse(ResponseClass):
+    data: LunchResponseSchema
