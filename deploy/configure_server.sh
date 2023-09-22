@@ -3,11 +3,6 @@
 fastapi_dir="/app/backend"
 # Define the FastAPI application directory
 app_dir="$fastapi_dir"
-# # Check if the application directory already exists
-# if [ -d "$app_dir" ]; then
-#     # The application directory already exists, delete the folder
-#     sudo rm -rf "$app_dir"
-# fi
 
 # Path to the Nginx configuration file
 nginx_config="/etc/nginx/sites-available/fastapi_app.conf"
@@ -20,15 +15,15 @@ sudo printf %s "server {
     index index.html;
 #    server_name freelunch.com www.freelunch.com;
     server_name 35.193.20.212;
-    location ~ /api {
+    location ~ / {
         proxy_pass http://127.0.0.1:8000;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     }
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
+#    location / {
+#        try_files \$uri \$uri/ =404;
+#    }
 }" | sudo tee "$nginx_config" > /dev/null
 
 # Remove any configuration file present
@@ -38,13 +33,13 @@ sudo ln -s "$nginx_config" /etc/nginx/sites-enabled/
 # Navigate to the FastAPI application directory
 cd "$app_dir" || exit
 # Create a virtual environment if it doesn't exist
-if [ ! -d "venv" ]; then
-    sudo pipenv install -r requirements.txt
+if [ ! -d ".venv" ]; then
+    python3 -m venv .venv
 fi
 # Activate the virtual environment
-pipenv shell
+source .venv/bin/activate
 # Install requirements
-# pip install -r requirements.txt
+pip3 install -r requirements.txt
 echo "FastAPI application setup on the FastAPI application server completed."
 # Check for syntax errors
 sudo nginx -t

@@ -1,12 +1,13 @@
 import time
-from datetime import datetime , timedelta
-
-from fastapi import APIRouter , HTTPException , status , Depends
-
+from datetime import datetime
+from app.db.database import get_db
+from app.models.user_models import User
+from sqlalchemy.orm import Session
+from fastapi import HTTPException, status, Depends
 from jose import jwt , JWTError
-from app.settings import settings
+from app.settings.settings import Settings
 
-setting = settings.Settings()
+setting = Settings()
 
 def create_token(id: int , expiry_time:int) -> str:
     payload = {
@@ -24,6 +25,7 @@ def create_refresh_token(id : int):
 
 
 def verify_token(token: str) -> int:
+
     try:
         data = jwt.decode(token, setting.secret_key,setting.algorithm)
         expire = data.get("expires")
@@ -36,6 +38,7 @@ def verify_token(token: str) -> int:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Token expired!") 
+        print(data)
         return data['user']
     except JWTError:
         raise HTTPException(
@@ -43,20 +46,20 @@ def verify_token(token: str) -> int:
             detail="Invalid token"
         )
         
-'''
-def refresh_access_token(refresh_token, db: Session = Depends(get_db)):
-    id = verify_token(refresh_token)
 
-    user = db.query(User).filter(User.id == id ).first()
+def refresh_access_token(user_id:int, refresh_token: str, db: Session):
+
+    user = db.query(User).filter(User.id == user_id ).first()
 
     if not user:
         raise HTTPException(detail="User does not exist.", status_code=404)
     elif user.refresh_token != refresh_token:
+
         raise HTTPException(
             detail="Invalid refresh token",
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         )
 
-    return create_access_token(id)
+    return create_access_token(user_id)
     
-'''
+

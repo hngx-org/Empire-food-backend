@@ -6,10 +6,10 @@ from pydantic import BaseModel
 from pydantic.types import Enum
 
 from app.services.user_services import hash_password
-from app.db.database import get_db
-from app.models.lunch_models import Lunch
+from app.db.database import get_db_unyield
+from app.models.lunch_models import Lunch as DB_Lunch
 from app.models.organization_models import Organization, OrganizationInvite, OrganizationLaunchWallet
-from app.models.user_models import User, Withdrawal
+from app.models.user_models import User as DB_User, Withdrawal as DB_Withdrawal
 
 
 fake = Faker()
@@ -22,8 +22,9 @@ class User(BaseModel):
     password_hash: str
     first_name: str
     last_name: str
-    phone_number: str
+    phone: str
     org_id: int
+    is_admin: bool = False
 
 
 class Org(BaseModel):
@@ -60,7 +61,7 @@ class Withdrawal(BaseModel):
     id: int
     user_id: int
     amount: float
-    status: Enum('redeemed', 'not redeemed') = 'not redeemed'
+    status: Enum('success', 'pending') = 'pending'
     created_at: datetime
     updated_at: datetime
     is_deleted: bool = False
@@ -109,7 +110,7 @@ def seed_users() -> tuple[list[Org], list[User]]:
             last_name=fake.last_name(),
             email=fake.email(),
             password_hash=hash_password(fake.password()),
-            phone_number=fake.phone_number(),
+            phone=str(fake.random.randint(1000000000, 9999999999)),
             org_id=fake.random.choice(orgs).id,
         )
         users.append(user)
@@ -199,7 +200,7 @@ def seed_lunches() -> list[Lunch]:
 
 def populate_db():
     """populate the database"""
-    db = get_db()
+    db = get_db_unyield()
 
     orgs, users = seed_users()
     org_wallets = seed_org_wallets()
@@ -214,7 +215,7 @@ def populate_db():
         db.refresh(db_org)
 
     for user in users:
-        db_user = User(**user.__dict__)
+        db_user = DB_User(**user.__dict__)
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
@@ -232,13 +233,13 @@ def populate_db():
         db.refresh(db_invite)
 
     for withdrawal in withdrawals:
-        db_withdrawal = Withdrawal(**withdrawal.__dict__)
+        db_withdrawal = DB_Withdrawal(**withdrawal.__dict__)
         db.add(db_withdrawal)
         db.commit()
         db.refresh(db_withdrawal)
 
     for lunch in lunches:
-        db_lunch = Lunch(**lunch.__dict__)
+        db_lunch = DB_Lunch(**lunch.__dict__)
         db.add(db_lunch)
         db.commit()
         db.refresh(db_lunch)
