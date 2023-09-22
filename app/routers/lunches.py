@@ -12,7 +12,7 @@ router = APIRouter()
 
 
 # Redeem lunch by updating 'redeemed' field
-@router.put('/api/lunch/redeem/:{lunch_id}')
+@router.put('/api/lunch/redeem/')
 async def redeem_lunch(lunch_ids: List[str], user: User = Depends(get_current_user), session = Depends(get_db)):
     # get_current_user depends on authenticate 
 
