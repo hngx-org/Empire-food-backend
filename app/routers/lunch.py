@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.middleware.authenticate import authenticate
 from app.models.user_models import User
-from app.Response.response import GetLunchResponse
+from app.Responses.response import GetLunchResponse
 from app.services.lunch_services import fetch_lunch
 
 app = APIRouter()
