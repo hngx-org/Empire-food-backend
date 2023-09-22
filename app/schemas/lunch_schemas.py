@@ -21,7 +21,7 @@ class SendLunch(BaseModel):
 
 class SendLunchResponseSchema(BaseModel):
   id: int
-  org_id: int 
+  org_id: int | None = None
   receiver_id: int
   sender_id: int
   quantity: int
@@ -37,4 +37,5 @@ class LunchResponseSchema(BaseModel):
     redeemed: bool
     note: str
     created_at: str
-    id: int
+    org_id: int | None = None
+    id : int

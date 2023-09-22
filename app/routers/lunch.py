@@ -54,7 +54,7 @@ async def get_all_lunches(
     response = {
         "message" : "Lunches retrieved successfully",
         "statusCode" : 200,
-        "data" : lunches
+        "data" : jsonable_encoder(lunches)
     }
 
     return response
@@ -66,7 +66,10 @@ async def get_all_lunches(
 async def get_lunch(lunch_id: int, user: User = Depends(authenticate), db: Session = Depends(get_db)):
     try:
         lunch = fetch_lunch(db, lunch_id)
-        response = jsonable_encoder(lunch)
+        response = {"message":"Lunch fetched successfully",
+                    "statusCode":200,
+                    "data":jsonable_encoder(lunch)
+        }
     except Exception:
         raise HTTPException(status_code=404, detail="Error: Lunch not found")
     else:
