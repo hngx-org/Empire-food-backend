@@ -1,11 +1,9 @@
 # Overview
 
-This is a FastAPI-built API for a LUNCH APP that allows staff of an organization to share lunch with one another.
+This is a FastAPI-built API for a LUNCH APP that allows staff of an organization to share lunch with one another. Detailed information about each **endpoints** can be found below.
 
 # TEAM NAME
 EMPIRE
-
-Detailed information about each **endpoints** can be found below.
 
 ## Table of Contents
 
