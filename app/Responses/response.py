@@ -36,3 +36,6 @@ class GetAllLunchesResponse(ResponseClass):
 
 class WithdrawalResponse(ResponseClass):
     data: WithdrawResponse
+
+class WithdrawalResponse(ResponseClass):
+    data: WithdrawResponse
