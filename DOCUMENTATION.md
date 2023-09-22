@@ -70,7 +70,6 @@ Here are some examples of how to use the API:
    "data":    None
 }
 ```
-- Responses: 
 
 >Status code: 500
 
