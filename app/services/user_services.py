@@ -5,16 +5,17 @@ from app.models.user_models import User
 import re
 
 from passlib.context import CryptContext
-from app.middleware.authenticate import  authenticate
-
-
+from app.middleware.authenticate import authenticate
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-def create_user(db:Session, user:UserCreate):
-  
+
+
+def create_user(db: Session, user: UserCreate):
+
     if db.query(User).filter(User.email == user.email).first():
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='User already exists')
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail='User already exists')
     new_user = User(
         email=user.email,
         password_hash=hash_password(user.password),
@@ -26,10 +27,8 @@ def create_user(db:Session, user:UserCreate):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-   
+
     return new_user
-
-
 
 
 def get_user(db: Session, user_id: int):
@@ -38,6 +37,13 @@ def get_user(db: Session, user_id: int):
 
 def get_user_by_email(db: Session, email: str):
     pass
+
+
+def get_org_users(db: Session, org_id: int) -> list[UserSearchSchema]:
+    """Fetches users linked to an organization"""
+    org_users = db.query(User).filter(User.org_id == org_id).all()
+
+    return org_users
 
 
 def search_user_by_name_or_email(db: Session, name_or_email: str):
@@ -73,5 +79,3 @@ def compare_password(password, hashed_password):
     It returns True if they match, False otherwise.
     """
     return pwd_context.verify(password, hashed_password)
-
-
