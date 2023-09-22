@@ -1,19 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Header
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from app.schemas.user_schemas import UserCreate
 from app.services.user_services import create_user
 from app.db.database import get_db
-from app.settings.settings import Settings
 from app.middleware.jwt_handler import create_access_token, create_refresh_token, refresh_access_token
-
-(
-    create_access_token,
-    create_refresh_token,
-    refresh_access_token,
-)
 from app.models.user_models import User
 from app.schemas import user_schemas
+from app.Responses.response import UserLoginResponse, ResponseClass
+from fastapi.encoders import jsonable_encoder
 
 app = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -24,19 +19,23 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-@app.post("/user/signup")
+@app.post("/user/signup", response_model=ResponseClass)
 async def signup(request: UserCreate, db: Session = Depends(get_db)):
     try:
         user = create_user(db,request)
 
-        return {"message": "user created successfully", "statusCode": 201, "data": user}
+        return ResponseClass(message = 'User registered successfully',
+                        statusCode= 201,
+                        data= None
+                    )
+  
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail=f"failed to create user")
 
 
 
-@app.post("/login", status_code=200)
+@app.post("/login", status_code=200, response_model=UserLoginResponse)
 def login(credentials: user_schemas.UserLogin, db: Session = Depends(get_db)):
     """Logs in user"""
 
@@ -56,6 +55,9 @@ def login(credentials: user_schemas.UserLogin, db: Session = Depends(get_db)):
     access_token = create_access_token({"id": user.id})
     refresh_token = create_refresh_token({"id": user.id})
 
+    user.refresh_token = refresh_token  
+    db.commit()
+    db.refresh(user)
     data = {
         "access_token": access_token,
         "refresh_token": refresh_token,
@@ -64,21 +66,30 @@ def login(credentials: user_schemas.UserLogin, db: Session = Depends(get_db)):
         "is_admin": user.is_admin,
     }
 
-    return {
-        "message": "User authenticated successfully.",
-        "status_code": 200,
-        "data": user_schemas.LoginResponse(**data),
-    }
+    return UserLoginResponse(message = "User authenticated successfully.",
+                        statusCode= 201,
+                        data= data
+                    )
 
 
-@app.post("/refresh", status_code=200)
-def refresh_token(token_request: user_schemas.TokenRequest):
+@app.post("/refresh/{id}", status_code=200)
+def refresh_token(id:int, refresh_token:str= Header(), db: Session = Depends(get_db)):
     """Refreshes user's access token"""
-
-    access_token = refresh_access_token(token_request.refresh_token)
+    
+    access_token = refresh_access_token(id, refresh_token, db)
 
     return {
         "message": "User authenticated successfully.",
         "status_code": 200,
         "data": {"access_token": access_token},
     }
+
+def get_authorization_token(authorization: str):
+    """
+    get_authorization_token returns the authorization token from the request
+    expects format: Authorization: Bearer <token>
+    """
+    parts = authorization.split(" ")
+    if len(parts) != 2:
+        return None
+    return parts[1]
