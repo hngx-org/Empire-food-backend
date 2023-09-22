@@ -20,3 +20,7 @@ class OrganizationSchema(BaseModel):
 
 class CreateOrganizationUserSchema(UserCreate):
     otp_token: str
+
+class OrganizationLunchSchema(BaseModel):
+    lunch_price: Optional[float] = 1000.00
+    currency_code: Optional[str] = 'NGN'

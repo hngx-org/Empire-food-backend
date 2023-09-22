@@ -5,7 +5,7 @@ from app.services.helper import  OTPVerificationMixin
 from fastapi import APIRouter, status, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.models.organization_models import  OrganizationInvite, Organization
-from app.schemas.organization_schemas import CreateOrganizationSchema, CreateOrganizationUserSchema
+from app.schemas.organization_schemas import CreateOrganizationSchema, CreateOrganizationUserSchema, OrganizationLunchSchema
 from app.db.database import get_db
 from app.models import User
 from app.middleware.authenticate import authenticate
@@ -88,17 +88,20 @@ async def create_organization(
             'id': new_org.id
         }
     }
-@router.post('/launch/update', status_code=status.HTTP_201_CREATED)
-async def update_organization_launch_date(
-        org: CreateOrganizationSchema, db: Session = Depends(get_db), current_user: User = Depends(authenticate)
+@router.put('/lunch/update/{org_id}', status_code=status.HTTP_201_CREATED)
+async def update_organization_launch_date(org_id: int,
+        org: OrganizationLunchSchema, db: Session = Depends(get_db), current_user: User = Depends(authenticate)
 ):
     if not current_user.is_admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='You do not have permission to perform this action')
     
-    org_instance = db.query(Organization).filter(Organization.id == current_user.org_id).first()
+    org_instance = db.query(Organization).filter(Organization.id == org_id).first()
 
     if not org_instance:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Organization not found')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='You do not belong to this organization')
+
+    if current_user.org_id != org_instance.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='You do not have permission to perform this action')
     
     org_instance.lunch_price = org.lunch_price
     org_instance.currency_code = org.currency_code
