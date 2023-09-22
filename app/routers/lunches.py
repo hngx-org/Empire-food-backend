@@ -23,11 +23,19 @@ async def redeem_lunch(lunch_ids: List[str], user: User = Depends(get_current_us
 
         # Check if current user owns the lunch obj
         if user.id == lunch_obj.sender_id:
-            return "You cannot redeem your own lunch"
+            return {
+                "message": "You cannot redeem your own lunch",
+                "statusCode": status.HTTP_403_FORBIDDEN,
+                "data": None
+            }
         
         elif user.id == lunch_obj.receiver_id:
             if lunch_obj.redeemed:
-                return "Lunch has already been redeemed"
+                return {
+                    "message": "Lunch has already been redeemed",
+                    "statusCode": status.HTTP_400_BAD_REQUEST,
+                    "data": None
+            }
             else:
                 lunch_obj.redeemed = True
 
@@ -38,6 +46,10 @@ async def redeem_lunch(lunch_ids: List[str], user: User = Depends(get_current_us
                 }
             
         else:
-            return "You cannot redeem this lunch"
+            return {
+                    "message": "You cannot redeem this lunch",
+                    "statusCode": status.HTTP_405_METHOD_NOT_ALLOWED,
+                    "data": None
+                }
         
         
