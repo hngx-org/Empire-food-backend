@@ -1,10 +1,10 @@
 import datetime
-from app.services.user_services import hash_password, compare_password
+from app.services.user_services import hash_password, compare_password, get_user
 from app.middleware.jwt_handler import create_access_token
 from app.services.helper import generate_otp, send_otp_to_email, OTPVerificationMixin
 from fastapi import APIRouter, status, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.models.organization_models import  OrganizationInvite
+from app.models.organization_models import  OrganizationInvite, Organization
 from app.schemas.organization_schemas import CreateOrganizationSchema, OrganizationSchema, CreateOrganizationUserSchema
 from app.db.database import get_db
 from app.models import user_models, User
@@ -57,4 +57,41 @@ async def register_user_in_organization(
         }
     }
 
+@router.post(
+    "/create", status_code=status.HTTP_201_CREATED, response_model=OrganizationSchema
+)
+async def create_organization(
+        org: CreateOrganizationSchema, db: Session = Depends(get_db),
+        role: user_models.User = Depends(get_user)
+):
+    """
+    Create an organization.
 
+    This endpoint allows an admin user to create an organization
+
+    Args:
+        org: The organization details
+        db: The database session
+        role: The admin user making the request
+
+    Returns:
+        The created organization
+    """
+    if role.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User already is an admin to an organization"
+        )
+    new_org = org.model_dump()
+    org_name = new_org.pop('organization_name')
+    new_org['name'] = org_name
+    new_org = Organization(**new_org)
+    new_org.currency_code = 'NG'
+    db.add(new_org)
+    db.commit()
+    db.refresh(new_org)
+
+    role.org_id = new_org.id
+    role.is_admin = True
+    db.commit()
+    return new_org
