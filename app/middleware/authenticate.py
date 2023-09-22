@@ -1,15 +1,22 @@
-from fastapi import HTTPException, Request
-from .jwt_handler import verify_access_token
-        
+from fastapi import HTTPException, Header, Depends
+from sqlalchemy.orm import Session
+from .jwt_handler import verify_token
+from app.db.database import get_db
+from app.models.user_models import User
+
+# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
 def send_email(message : str , subject : str , to_email : str):
     pass
 
-def authenticate(token: Request):
-    token = token.headers.get("Authorization")
-    if token is None or not token.startswith("Bearer "):
+def authenticate(access_token: str = Header(), db: Session= Depends(get_db)):
+    if access_token is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    token = token.split(" ")[1] 
-    
-    
-    data = verify_access_token(token)
-    return data['user']
+
+    user_id = verify_token(access_token)
+
+    try:
+        return db.query(User).filter(User.id == user_id).first()
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=401, detail="failed to authenticate user")
