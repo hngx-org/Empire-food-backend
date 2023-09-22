@@ -8,7 +8,7 @@ from app.models.user_models import User
 
 # This Endpoint was written by Neon
 
-router=APIRouter(prefix="/user/bank")
+router=APIRouter(prefix="/user/bank", tags=["Bank Details"])
 
 # Get user bank details done for Okoh Emmanuel
 @router.get("")
