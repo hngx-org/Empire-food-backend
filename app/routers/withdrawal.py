@@ -1,6 +1,7 @@
 from datetime import datetime
 from app.middleware.authenticate import authenticate
 from app.schemas.withdrawal_schema import Withdraw
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, status, HTTPException
 from app.db.database import get_db
@@ -35,6 +36,6 @@ def withdraw_request(withdraw: Withdraw,
     db.add(new_withdrawal)
     db.commit()
     db.refresh(new_withdrawal)
-    #return new_withdrawal  # return according to specified schema
+    # return according to specified schema
     return WithdrawResponse(message="Withdrawal request created successfully", statusCode=201, data=jsonable_encoder(new_withdrawal))
 # handle errors
