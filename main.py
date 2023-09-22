@@ -10,7 +10,7 @@ from app.routers.bank_account import router as bankdetails_app
 from app.db.database import create_database
 from decouple import config
 
-prod = True if config("PROD") == "PRODUCTION" else False
+prod = True if config("PROD", default = "dev")  == "PRODUCTION" else False
 
 v1 = APIRouter(prefix="/api/v1")
 ############################# include all routers here #############################
