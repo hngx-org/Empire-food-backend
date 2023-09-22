@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel, EmailStr
-
+from typing import Optional
 
 
 class UserBase(BaseModel):
@@ -16,14 +16,16 @@ class UserCreate(UserLogin):
     last_name: str
     phone_number: str
 
+
+class UserResponseSchema(BaseModel):
+    id: str
+
 class UserSearchSchema(BaseModel):
     id: int
     first_name: str
     last_name: str
     profile_pic: Optional[str] = None
-    email: str
-    phone: str
-    is_admin: bool
+
 
 
 class UserProfileSchema(UserSearchSchema):
@@ -31,6 +33,8 @@ class UserProfileSchema(UserSearchSchema):
     bank_number: Optional[str] = None
     bank_code: Optional[str] = None
     bank_name: Optional[str] = None
+
+
 
 
 

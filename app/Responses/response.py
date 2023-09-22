@@ -2,6 +2,14 @@ from typing import Optional
 from pydantic import BaseModel
 from app.schemas.user_schemas import UserProfileSchema, UserLoginSchema, UserSearchSchema
 from app.schemas.lunch_schemas import LunchResponseSchema
+from typing import Optional
+
+
+class Response:
+    messaage: str
+    statusCode: int
+    data: dict
+
 
 class ResponseClass(BaseModel):
     message: str
