@@ -15,15 +15,15 @@ sudo printf %s "server {
     index index.html;
 #    server_name freelunch.com www.freelunch.com;
     server_name 35.193.20.212;
-    location ~ /api {
+    location ~ / {
         proxy_pass http://127.0.0.1:8000;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     }
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
+#    location / {
+#        try_files \$uri \$uri/ =404;
+#    }
 }" | sudo tee "$nginx_config" > /dev/null
 
 # Remove any configuration file present
