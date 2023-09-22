@@ -3,7 +3,7 @@ from app.schemas.user_schemas import UserCreate
 from app.models.user_models import User
 from datetime import datetime
 from uuid import uuid4
-from app.Responses.response import Response
+
 
 
 def get_user(db: Session, user_id: int):
