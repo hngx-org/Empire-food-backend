@@ -26,7 +26,7 @@ class OrganizationLaunchWallet(Base):
     __tablename__ = "organization_lunch_wallets"
 
     id = Column(Integer, primary_key=True, index=True)
-    balance = Column(DECIMAL(10, 2), nullable=False)
+    balance = Column(DECIMAL(10, 2), nullable=False, default=0.00)
     org_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"))
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())

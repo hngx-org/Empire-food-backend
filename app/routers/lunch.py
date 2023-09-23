@@ -16,7 +16,7 @@ from app.services.lunch_services import sendLunch,fetch_lunch, get_user_lunches
 
 app = APIRouter(tags=["Lunch"])
 
-@app.post("/lunch/send", response_model=SendLunchResponse)
+@app.post("/lunch/send",)
 async def send_lunch( data:SendLunch,current_user:User=Depends(authenticate), db:Session=Depends(get_db)):
     """
         Send lunch to an authenticated user.
@@ -26,16 +26,17 @@ async def send_lunch( data:SendLunch,current_user:User=Depends(authenticate), db
     user_id = current_user.id
 
     #check for the total max amount, then send
-    resp = sendLunch(db=db,data=data,user_id=user_id, org_id=current_user.org_id)
-    if resp:
-      response = {
+    resp, err = sendLunch(db=db,data=data,user_id=user_id, org_id=current_user.org_id)
+
+    if err:
+        raise err
+    
+    return {
             "message": "Lunch request created successfully",
             "statusCode": 201,
             "data": jsonable_encoder(resp)
           }
-      return response
-    else:
-      raise HTTPException(status_code=404,detail="Sorry, you can only send a maximum of 4 lunches at a time")
+
 
 
 @app.get("/lunch/all", status_code=200, response_model=GetAllLunchesResponse)
