@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 import secrets
 import string
 from app.middleware.authenticate import authenticate
@@ -7,8 +7,8 @@ from app.middleware.jwt_handler import create_access_token
 from app.services.helper import generate_otp, send_otp_to_email, OTPVerificationMixin
 from fastapi import APIRouter, Response, status, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.models.organization_models import  OrganizationInvite
-from app.schemas.organization_schemas import CreateOrganizationSchema, OrganizationSchema, CreateOrganizationUserSchema, OrganizationInviteRequestSchema
+from app.models.organization_models import  OrganizationInvite, Organization
+from app.schemas.organization_schemas import CreateOrganizationSchema, CreateOrganizationUserSchema, OrganizationInviteRequestSchema, OrganizationLunchSchema
 
 from app.db.database import get_db
 from app.models import User
@@ -74,7 +74,7 @@ async def register_user_in_organization(
 
 
 @router.post("/invite", status_code=status.HTTP_200_OK)
-def create_organization_invite(
+def organization_invite(
     invite_data: OrganizationInviteRequestSchema,
     db: Session = Depends(get_db),
     user: User = Depends(authenticate)
@@ -89,7 +89,7 @@ def create_organization_invite(
         raise HTTPException(status_code=401, detail="Only admin users can create organization invites")
 
     # Calculate the expiration time (TTL) for the invite
-    expiration_time = datetime.utcnow() + datetime.timedelta(days=7)
+    expiration_time = datetime.utcnow() + timedelta(days=7)
     
     # Generate a new secure token
     invite_token = generate_token()
@@ -108,11 +108,24 @@ def create_organization_invite(
 async def create_organization(
         org: CreateOrganizationSchema, db: Session = Depends(get_db), current_user: User = Depends(authenticate)
 ):
+    if org.organization_name == '':
+        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail='Organization name cannot be empty')
+    
     if current_user.org_id:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='User already belongs to an organization')
-    org_instance = db.query(Organization).filter(Organization.name == org.organization_name).first()
-    if org_instance:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Organization already exists')
+    
+    org_instance = db.query(Organization)
+
+    org_name_check = org_instance.filter(Organization.name == org.organization_name).first()
+
+    if org_name_check:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Organization name already exists')
+    
+    user_org_check = org_instance.filter(Organization.id == current_user.org_id).first()
+
+    if user_org_check:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='User already belongs to an organization')
+    
     new_org = Organization(
         name=org.organization_name,
         lunch_price=org.lunch_price,

@@ -7,13 +7,13 @@ class UserBase(BaseModel):
 
 
 class UserLogin(UserBase):
-    password: str
+    password: str 
 
 
 class UserCreate(UserLogin):
     first_name: str
     last_name: str
-    phone_number: str
+    phone_number: Optional[str] = ""
 
 
 class UserResponseSchema(BaseModel):
