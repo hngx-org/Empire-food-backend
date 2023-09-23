@@ -12,3 +12,11 @@ class WithdrawResponse(BaseModel):
     status: str
     amount: int
     created_at: str
+
+
+class WithdrawResponseSchema(BaseModel):
+    id: int
+    user_id: int
+    status: str
+    amount: int
+    created_at: str

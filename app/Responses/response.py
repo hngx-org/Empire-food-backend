@@ -39,3 +39,7 @@ class SendLunchResponse(ResponseClass):
     
 class WithdrawalResponse(ResponseClass):
     data: WithdrawResponse
+
+class AdminWithdrawalResponse(ResponseClass):
+    user_id: int
+    data: list[WithdrawResponse]
