@@ -167,4 +167,57 @@ def send_otp_to_email(sender, email, org_id, org_name):
     """
 
     # Call the send_email function to send the email
-    return send_email(email, sender, subject, "", html_content), otp
+    return send_email(email, 'sanctuspeter@gmail.com', subject, "", html_content), otp
+
+
+def send_forget_password_email(email, otp_var):
+    """Sends a password reset link to the provided email address.
+
+    Args:
+        email (str): The recipient's email address.
+        otp_var (str): The OTP.
+    """
+    key = generate_otp(1024, email)
+    OTP = pyotp.TOTP(key, interval=int(settings.OTP_INTERVAL))
+    otp = OTP.now()
+    subject = "Password reset link"
+    html_content = f"""
+    <html>
+    <head>
+        <style>
+            /* Add your inline CSS styles here */
+            body {{
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+            }}
+            .container {{
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }}
+            .message {{
+                font-size: 16px;
+                margin-bottom: 20px;
+            }}
+            .otp {{
+                font-size: 24px;
+                font-weight: bold;
+                color: #007bff;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <p class="message">Hello,</p>
+            <p class="message">You have requested to reset your password.</p>
+            <p class="message">Your OTP (One-Time Password) for authentication is: <span class="otp">{otp}</span></p>
+            <p class="message">Please use this OTP to complete your password reset.</p>
+            <p class="message">Thank you!</p>
+        </div>
+    </body>
+    </html>
+    """
+    return send_email(email, 'sanctuspeter@gmail.com', subject, "", html_content)

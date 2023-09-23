@@ -26,7 +26,7 @@ async def send_lunch( data:SendLunch,current_user:User=Depends(authenticate), db
     user_id = current_user.id
 
     #check for the total max amount, then send
-    resp = sendLunch(db=db,data=data,user_id=user_id)
+    resp = sendLunch(db=db,data=data,user_id=user_id, org_id=current_user.org_id)
     if resp:
       response = {
             "message": "Lunch request created successfully",
