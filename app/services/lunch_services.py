@@ -22,10 +22,11 @@ def sendLunch(db:Session, data:SendLunch, user_id:int, org_id:int):
     return False
   
   org_wallet.balance = org_wallet.balance - data.quantity
+
   
   db.commit()
   db.refresh(org_wallet)
-  res = insert_lunch(db=db,user_id=user_id,data=data)
+  res = insert_lunch(db=db,user_id=user_id,data=data, org_id=org_id)
   if res:
     return res
   return False
