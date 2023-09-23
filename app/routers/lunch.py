@@ -81,7 +81,7 @@ async def get_lunch(lunch_id: int, user: User = Depends(authenticate), db: Sessi
 
 # Redeem lunch by updating 'redeemed' field
 @app.put('/lunch/redeem')
-async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(authenticate), session = Depends(get_db)):
+async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(authenticate), db: Session = Depends(get_db)):
     """
     Redeem lunch by updating 'redeemed' field
     """
@@ -89,7 +89,7 @@ async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(auth
     for lunch_id in lunch_ids:
     # Get lunch obj using id
         # lunch_obj = session.query(lunch_models.Lunch).filter(lunch_models.Lunch.receiver_id == user.id).first()
-        lunch_obj = session.query(Lunch).get(lunch_id)
+        lunch_obj = db.query(Lunch).get(lunch_id)
 
         # Check if current user owns the lunch obj
         if user.id == lunch_obj.sender_id:
@@ -109,12 +109,6 @@ async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(auth
                 )
             else:
                 lunch_obj.redeemed = True
-
-                return GetLunchResponse(
-                    message="Lunch redeemed successfully",
-                    statusCode=status.HTTP_201_CREATED,
-                    data=None
-                )
             
         else:
             return GetLunchResponse(
@@ -122,5 +116,12 @@ async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(auth
                     statusCode=status.HTTP_405_METHOD_NOT_ALLOWED,
                     data=None
             )
-        
+    
+    db.commit()
+    return GetLunchResponse(
+        message="Lunch redeemed successfully",
+        statusCode=status.HTTP_200_OK,
+        data=None
+    )
+
         

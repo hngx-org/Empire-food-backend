@@ -29,7 +29,7 @@ class UserSearchResponse(ResponseClass):
     data: list[UserSearchSchema]
 
 class GetLunchResponse(ResponseClass):
-    data: SendLunchResponseSchema
+    pass
 
 class GetAllLunchesResponse(ResponseClass):
     data: list[SendLunchResponseSchema]
