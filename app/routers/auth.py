@@ -19,19 +19,16 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-@app.post("/user/signup", response_model=ResponseClass)
+@app.post("/user/signup", response_model=ResponseClass, status_code=201)
 async def signup(request: UserCreate, db: Session = Depends(get_db)):
-        
-        user, exception = create_user(db,request)
-        if exception:
-            raise exception
+    user, exception = create_user(db, request)
+    if exception:
+        raise exception
 
-        return ResponseClass(message = 'User registered successfully',
-                        statusCode= 201,
-                        data= None
-                    )
-  
-
+    return ResponseClass(message='User registered successfully',
+                         statusCode=201,
+                         data=None
+                         )
 
 
 @app.post("/login", status_code=200, response_model=UserLoginResponse)
@@ -54,7 +51,7 @@ def login(credentials: user_schemas.UserLogin, db: Session = Depends(get_db)):
     access_token = create_access_token(user.id)
     refresh_token = create_refresh_token(user.id)
 
-    user.refresh_token = refresh_token  
+    user.refresh_token = refresh_token
     db.commit()
     db.refresh(user)
     data = {
@@ -65,16 +62,16 @@ def login(credentials: user_schemas.UserLogin, db: Session = Depends(get_db)):
         "is_admin": user.is_admin,
     }
 
-    return UserLoginResponse(message = "User authenticated successfully.",
-                        statusCode= 201,
-                        data= data
-                    )
+    return UserLoginResponse(message="User authenticated successfully.",
+                             statusCode=201,
+                             data=data
+                             )
 
 
 @app.post("/refresh", status_code=200)
-def refresh_token(id:int, refresh_token:str= Header(), db: Session = Depends(get_db)):
+def refresh_token(id: int, refresh_token: str = Header(), db: Session = Depends(get_db)):
     """Refreshes user's access token"""
-    
+
     access_token = refresh_access_token(id, refresh_token, db)
 
     return {
@@ -82,6 +79,7 @@ def refresh_token(id:int, refresh_token:str= Header(), db: Session = Depends(get
         "status_code": 200,
         "data": {"access_token": access_token},
     }
+
 
 def get_authorization_token(authorization: str):
     """

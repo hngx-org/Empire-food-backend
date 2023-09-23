@@ -1,3 +1,6 @@
+
+from app.schemas.user_schemas import UserCreate
+from app.services.user_services import create_user
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
@@ -9,6 +12,7 @@ from app.services.user_services import (
 )
 from app.models.user_models import User
 from app.Responses.response import UserResponse, UserSearchResponse
+
 
 app = APIRouter(tags=["Users"])
 
@@ -35,4 +39,4 @@ async def search(name_or_email: str, db: Session = Depends(get_db), current_user
 def all_org_users(db: Session = Depends(get_db), current_user: User = Depends(authenticate)):
     """Returns all users linked to the organization of the current user"""
     users = get_org_users(db, current_user.org_id)
-    return UserSearchResponse(message="User search successful", statusCode=200, data=jsonable_encoder(users))
+
