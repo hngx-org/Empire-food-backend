@@ -1,15 +1,18 @@
 import base64
-import pyotp
 from datetime import datetime
-from passlib.context import CryptContext
-from app.settings.settings import Settings
-from mailjet_rest import Client
 
+import pyotp
+from mailjet_rest import Client
+from passlib.context import CryptContext
+
+from app.settings.settings import Settings
 
 settings = Settings()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-mailjet = Client(auth=(settings.email_api_key, settings.email_api_secret), version='v3.1')
+mailjet = Client(
+    auth=(settings.email_api_key, settings.email_api_secret), version="v3.1"
+)
 
 
 class generateKey:
@@ -29,7 +32,7 @@ def send_email(receiver: str, sender: str, subject: str, text: str, html: str):
         html (str): The email body in HTML format.
     """
     data = {
-        'Messages': [
+        "Messages": [
             {
                 "From": {
                     "Email": sender,
@@ -42,11 +45,12 @@ def send_email(receiver: str, sender: str, subject: str, text: str, html: str):
                 "Subject": subject,
                 "TextPart": text,
                 "HTMLPart": html,
-                "CustomID": "AppGettingStartedTest"
+                "CustomID": "AppGettingStartedTest",
             }
         ]
     }
     return mailjet.send.create(data=data)
+
 
 def generate_otp(org_id):
     """Generates a 6-digit OTP for organization invite.
@@ -59,8 +63,7 @@ def generate_otp(org_id):
     """
     keygen = generateKey()
     key_bytes = keygen.return_value(org_id).encode()
-    key_base32 = base64.b32encode(key_bytes).decode('utf-8')
-    return key_base32
+    return base64.b32encode(key_bytes).decode("utf-8")
 
 
 class OTPVerificationMixin:
@@ -78,8 +81,7 @@ class OTPVerificationMixin:
         """
         keygen = generateKey()
         key_bytes = keygen.return_value(org_id).encode()
-        key_base32 = base64.b32encode(key_bytes).decode('utf-8')
-        return key_base32
+        return base64.b32encode(key_bytes).decode("utf-8")
 
     def verify_otp(self, otp, org_id):
         """Verifies the provided OTP.

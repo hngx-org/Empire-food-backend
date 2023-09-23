@@ -1,9 +1,15 @@
 from typing import Optional
 from pydantic import BaseModel
-from app.schemas.user_schemas import UserProfileSchema, UserLoginSchema, UserSearchSchema
-from app.schemas.lunch_schemas import LunchResponseSchema,SendLunchResponseSchema
+from app.schemas.user_schemas import (
+    UserProfileSchema,
+    UserLoginSchema,
+    UserSearchSchema,
+)
+from app.schemas.lunch_schemas import (
+    LunchResponseSchema,
+    SendLunchResponseSchema,
+)
 from app.schemas.withdrawal_schema import WithdrawResponse
-from typing import Optional
 
 
 class Response:
@@ -25,17 +31,22 @@ class UserResponse(ResponseClass):
 class UserLoginResponse(ResponseClass):
     data: UserLoginSchema
 
+
 class UserSearchResponse(ResponseClass):
     data: list[UserSearchSchema]
+
 
 class GetLunchResponse(ResponseClass):
     data: LunchResponseSchema
 
+
 class GetAllLunchesResponse(ResponseClass):
     data: list[LunchResponseSchema]
 
+
 class SendLunchResponse(ResponseClass):
     data: SendLunchResponseSchema
-    
+
+
 class WithdrawalResponse(ResponseClass):
     data: WithdrawResponse
