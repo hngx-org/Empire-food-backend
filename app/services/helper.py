@@ -3,19 +3,21 @@ import pyotp
 from datetime import datetime
 from passlib.context import CryptContext
 from app.settings.settings import Settings
-#from mailjet_rest import Client
+from mailjet_rest import Client
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-#mailjet = Client(auth=(settings.api_key, settings.api_secret), version='v3.1')
 
 settings = Settings()
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+mailjet = Client(auth=(settings.email_api_key, settings.email_api_secret), version='v3.1')
+
+
 class generateKey:
     @staticmethod
     def return_value(phone):
         return f"{phone}{datetime.date(datetime.now())}{settings.secret_key}"
 
 
-'''
 def send_email(receiver: str, sender: str, subject: str, text: str, html: str):
     """Sends an email to the provided recipient.
 
@@ -45,7 +47,6 @@ def send_email(receiver: str, sender: str, subject: str, text: str, html: str):
         ]
     }
     return mailjet.send.create(data=data)
-'''
 
 def generate_otp(org_id):
     """Generates a 6-digit OTP for organization invite.
@@ -163,4 +164,4 @@ def send_otp_to_email(sender, email, org_id, org_name):
     """
 
     # Call the send_email function to send the email
-    # return send_email(email, sender, subject, "", html_content), otp
+    return send_email(email, sender, subject, "", html_content), otp
