@@ -143,7 +143,8 @@ def send_otp_to_email(sender, email, org_id, org_name):
             .message {{
                 font-size: 16px;
                 margin-bottom: 20px;
-            }}.otp {{
+            }}
+            .otp {{
                 font-size: 24px;
                 font-weight: bold;
                 color: #007bff;
