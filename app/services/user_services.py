@@ -13,6 +13,29 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_user(db: Session, user: UserCreate):
 
+    if user.password == "":
+        return None, HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Password cannot be empty'
+        )
+    # if  user.phone_number  == "":
+    #     return None, HTTPException(
+    #         status_code=status.HTTP_400_BAD_REQUEST,
+    #         detail='Phone number cannot be empty'
+    #     )
+    if user.first_name == "" or user.last_name == "":
+        return None, HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='First name and last name cannot be empty'
+        )
+    password, err = validate_password(user.password)
+
+    if err:
+        return None, HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=err
+        )
+
     if db.query(User).filter(User.email == user.email).first():
         return None, HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -41,12 +64,10 @@ def create_user(db: Session, user: UserCreate):
         )
 
 
-def get_user(db: Session, user_id: int):
-    pass
-
-
-def get_user_by_email(db: Session, email: str):
-    pass
+def validate_password(password: str):
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters long"
+    return True, None
 
 
 def get_org_users(db: Session, org_id: int) -> list[UserSearchSchema]:

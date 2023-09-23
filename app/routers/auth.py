@@ -19,7 +19,7 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-@app.post("/user/signup", response_model=ResponseClass)
+@app.post("/user/signup", response_model=ResponseClass, status_code=201)
 async def signup(request: UserCreate, db: Session = Depends(get_db)):
     user, exception = create_user(db, request)
     if exception:

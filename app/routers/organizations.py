@@ -5,11 +5,10 @@ from pydantic import EmailStr
 from app.services.user_services import hash_password, compare_password
 from app.middleware.jwt_handler import create_access_token
 from app.services.helper import generate_otp, send_otp_to_email, OTPVerificationMixin
-from fastapi import APIRouter, Response, status, Depends, HTTPException
+from fastapi import APIRouter, status, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.models.organization_models import OrganizationInvite, Organization
-from app.schemas.organization_schemas import CreateOrganizationSchema, OrganizationSchema, CreateOrganizationUserSchema, \
-    OrganizationInviteRequestSchema, OrganizationLunchSchema
+from app.schemas.organization_schemas import CreateOrganizationSchema, CreateOrganizationUserSchema, OrganizationLunchSchema
 
 from app.db.database import get_db
 from app.models import User, user_models
@@ -98,11 +97,24 @@ async def user_organization_invite(
 async def create_organization(
         org: CreateOrganizationSchema, db: Session = Depends(get_db), current_user: User = Depends(authenticate)
 ):
+    if org.organization_name == '':
+        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail='Organization name cannot be empty')
+    
     if current_user.org_id:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='User already belongs to an organization')
-    org_instance = db.query(Organization).filter(Organization.name == org.organization_name).first()
-    if org_instance:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Organization already exists')
+    
+    org_instance = db.query(Organization)
+
+    org_name_check = org_instance.filter(Organization.name == org.organization_name).first()
+
+    if org_name_check:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Organization name already exists')
+    
+    user_org_check = org_instance.filter(Organization.id == current_user.org_id).first()
+
+    if user_org_check:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='User already belongs to an organization')
+    
     new_org = Organization(
         name=org.organization_name,
         lunch_price=org.lunch_price,
