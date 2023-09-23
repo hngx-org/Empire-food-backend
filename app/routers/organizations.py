@@ -7,9 +7,9 @@ from app.middleware.jwt_handler import create_access_token
 from app.services.helper import generate_otp, send_otp_to_email, OTPVerificationMixin
 from fastapi import APIRouter, status, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.models.organization_models import OrganizationInvite, Organization
+from app.models.organization_models import OrganizationInvite, Organization, OrganizationLaunchWallet
 from app.schemas.organization_schemas import CreateOrganizationSchema, CreateOrganizationUserSchema, OrganizationLunchSchema
-
+from decimal import Decimal
 from app.db.database import get_db
 from app.models import User, user_models
 from app.middleware.authenticate import authenticate, get_admin_user
@@ -126,8 +126,16 @@ async def create_organization(
 
     current_user.org_id = new_org.id
     current_user.is_admin = True
+
+    org_wallet = OrganizationLaunchWallet(
+        org_id=new_org.id,
+        balance=100000
+    )
+
+    db.add(org_wallet)
     db.commit()
     db.refresh(current_user)
+    db.refresh(org_wallet)
     return {
         'message': 'Organization created successfully',
         'statusCode': 201,
@@ -138,7 +146,8 @@ async def create_organization(
                 'email': current_user.email,
                 'id': current_user.id,
                 'is_admin': current_user.is_admin
-            }
+            },
+            "wallet_balance": org_wallet.balance,
         }
     }
 
@@ -174,5 +183,79 @@ async def update_organization_launch_date(
             'name': org_instance.name,
             'id': org_instance.id,
             "lunch_price": org_instance.lunch_price,
+        }
+    }
+
+
+
+@router.get('/wallet', status_code=status.HTTP_200_OK)
+async def get_wallet(
+        db: Session = Depends(get_db),
+        role: User = Depends(get_admin_user)
+):
+    """
+
+    Get Organization Wallet
+
+    This endpoint allows an admin user to get the organization wallet
+
+    Args:
+        db: The database session
+        role: The admin user making the request
+
+    Returns:
+        The organization wallet
+    """
+    org_instance = db.query(OrganizationLaunchWallet).filter(OrganizationLaunchWallet.org_id == role.org_id).first()
+
+    if not org_instance:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Organization not found')
+
+    return {
+        'message': 'success',
+        'statusCode': 200,
+        'data': {
+            'balance': org_instance.balance
+        }
+    }
+
+@router.post('/wallet', status_code=status.HTTP_200_OK)
+async def update_wallet(
+        amount: Decimal, db: Session = Depends(get_db),
+        role: User = Depends(get_admin_user)
+):
+    """
+
+    Update Organization Wallet
+
+    This endpoint allows an admin user to update the organization wallet
+
+    Args:
+        balance: The organization wallet balance
+        db: The database session
+        role: The admin user making the request
+
+    Returns:
+        The updated organization
+    """
+    org_wallet = db.query(OrganizationLaunchWallet).filter(OrganizationLaunchWallet.org_id == role.org_id).first()
+
+    if not org_wallet:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Organization not found')
+
+    if amount <= 0:
+        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail='Amount cannot be negative')
+    
+    org_wallet.balance += amount
+
+    db.add(org_wallet)
+    db.commit()
+    db.refresh(org_wallet)
+
+    return {
+        'message': 'success',
+        'statusCode': 200,
+        'data': {
+            "balance": org_wallet.balance
         }
     }

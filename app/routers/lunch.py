@@ -16,7 +16,7 @@ from app.services.lunch_services import sendLunch,fetch_lunch, get_user_lunches
 
 app = APIRouter(tags=["Lunch"])
 
-@app.post("/lunch/send", response_model=SendLunchResponse)
+@app.post("/lunch/send",)
 async def send_lunch( data:SendLunch,current_user:User=Depends(authenticate), db:Session=Depends(get_db)):
     """
         Send lunch to an authenticated user.
@@ -26,16 +26,17 @@ async def send_lunch( data:SendLunch,current_user:User=Depends(authenticate), db
     user_id = current_user.id
 
     #check for the total max amount, then send
-    resp = sendLunch(db=db,data=data,user_id=user_id, org_id=current_user.org_id)
-    if resp:
-      response = {
+    resp, err = sendLunch(db=db,data=data,user_id=user_id, org_id=current_user.org_id)
+
+    if err:
+        raise err
+    
+    return {
             "message": "Lunch request created successfully",
             "statusCode": 201,
             "data": jsonable_encoder(resp)
           }
-      return response
-    else:
-      raise HTTPException(status_code=404,detail="Sorry, you can only send a maximum of 4 lunches at a time")
+
 
 
 @app.get("/lunch/all", status_code=200, response_model=GetAllLunchesResponse)
@@ -80,7 +81,7 @@ async def get_lunch(lunch_id: int, user: User = Depends(authenticate), db: Sessi
 
 # Redeem lunch by updating 'redeemed' field
 @app.put('/lunch/redeem')
-async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(authenticate), session = Depends(get_db)):
+async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(authenticate), db: Session = Depends(get_db)):
     """
     Redeem lunch by updating 'redeemed' field
     """
@@ -88,7 +89,7 @@ async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(auth
     for lunch_id in lunch_ids:
     # Get lunch obj using id
         # lunch_obj = session.query(lunch_models.Lunch).filter(lunch_models.Lunch.receiver_id == user.id).first()
-        lunch_obj = session.query(Lunch).get(lunch_id)
+        lunch_obj = db.query(Lunch).get(lunch_id)
 
         # Check if current user owns the lunch obj
         if user.id == lunch_obj.sender_id:
@@ -108,12 +109,6 @@ async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(auth
                 )
             else:
                 lunch_obj.redeemed = True
-
-                return GetLunchResponse(
-                    message="Lunch redeemed successfully",
-                    statusCode=status.HTTP_201_CREATED,
-                    data=None
-                )
             
         else:
             return GetLunchResponse(
@@ -121,5 +116,12 @@ async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(auth
                     statusCode=status.HTTP_405_METHOD_NOT_ALLOWED,
                     data=None
             )
-        
+    
+    db.commit()
+    return GetLunchResponse(
+        message="Lunch redeemed successfully",
+        statusCode=status.HTTP_200_OK,
+        data=None
+    )
+
         

@@ -77,7 +77,7 @@ CREATE TABLE organization_invites (
 CREATE TABLE withdrawals (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
-    status ENUM('success', 'pending') NOT NULL,
+    status ENUM('redeemed', 'not_redeemed') NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

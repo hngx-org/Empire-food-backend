@@ -71,13 +71,15 @@ def validate_password(password: str):
     return True, None
 
 
-def get_org_users(db: Session, org_id: int) -> list[UserSearchSchema]:
+def get_org_users(db: Session, org_id: int, user_id: int) -> list[UserSearchSchema]:
     """Fetches users linked to an organization"""
     try:
-        org_users = db.query(User).filter(User.org_id == org_id).all()
+        org_users = db.query(User).filter(User.org_id == org_id, User.id != user_id).all()
         return org_users
+    
     except Exception as err:
         print(err)
+       
 
 
 def search_user_by_name_or_email(db: Session, name_or_email: str):

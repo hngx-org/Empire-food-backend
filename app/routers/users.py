@@ -20,7 +20,7 @@ app = APIRouter(tags=["Users"])
 @app.get("/user/profile", response_model=UserResponse)
 async def user_profile(current_user: User = Depends(authenticate)):
 
-    
+
     return {"message": "User data fetched successfully",
             "statusCode": 200,
             "data": jsonable_encoder(current_user)}
@@ -39,7 +39,7 @@ async def search(name_or_email: str, db: Session = Depends(get_db), current_user
 @app.get("/user/all", response_model=UserSearchResponse)
 def all_org_users(db: Session = Depends(get_db), current_user: User = Depends(authenticate)):
     """Returns all users linked to the organization of the current user"""
-    users = get_org_users(db, current_user.org_id)
+    users = get_org_users(db, current_user.org_id, current_user.id)
 
     return UserSearchResponse(message="List all users successful", statusCode=200, data=jsonable_encoder(users))
 

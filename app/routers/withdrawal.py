@@ -24,15 +24,21 @@ def withdraw_request(withdraw: Withdraw,
         # return appropriate error response with either 403 or 404
         raise HTTPException(
             status_code=404, detail='Balance is less than withdraw amount')
+    
     amount_left = user.lunch_credit_balance - withdraw.amount
     created_at = datetime.now()
+
     withdraw_amount = withdraw.amount * org_lunch_price
+
     new_withdrawal = user_models.Withdrawal(user_id=user.id, status="redeemed", amount=withdraw_amount,
                                             created_at=created_at)
+    
     user_query = db.query(user_models.User).filter(
         user_models.User.id == user.id)
+    
     user_query.update({"lunch_credit_balance": amount_left},
                       synchronize_session=False)
+    
     db.add(new_withdrawal)
     db.commit()
     db.refresh(new_withdrawal)
