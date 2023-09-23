@@ -5,10 +5,10 @@ from app.middleware.authenticate import authenticate
 from app.services.user_services import hash_password, compare_password
 from app.middleware.jwt_handler import create_access_token
 from app.services.helper import generate_otp, send_otp_to_email, OTPVerificationMixin
-from fastapi import APIRouter,Response, status, Depends, HTTPException
+from fastapi import APIRouter, Response, status, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.models.organization_models import  OrganizationInvite
-from app.schemas.organization_schemas import CreateOrganizationSchema, OrganizationSchema, CreateOrganizationUserSchema,OrganizationInviteRequestSchema
+from app.schemas.organization_schemas import CreateOrganizationSchema, OrganizationSchema, CreateOrganizationUserSchema, OrganizationInviteRequestSchema
 from app.db.database import get_db
 from app.models import user_models, User
 from app.models.organization_models import Organization, OrganizationInvite
@@ -21,6 +21,7 @@ def generate_token(length=32):
 
     # Generate a random token using the defined character set
     token = ''.join(secrets.choice(characters) for _ in range(length))
+    
     return token
 
 router = APIRouter(tags=["Organizations"], prefix="/organization")
@@ -70,6 +71,8 @@ async def register_user_in_organization(
         }
     }
 
+
+
 @router.post(
     "/create", status_code=status.HTTP_201_CREATED, response_model=OrganizationSchema
 )
@@ -87,7 +90,6 @@ def create_organization_invite(
 
     if not is_admin:
         raise HTTPException(status_code=401, detail="Only admin users can create organization invites")
-
     # Calculate the expiration time (TTL) for the invite
     expiration_time = datetime.utcnow() + datetime.timedelta(days=7)
 
