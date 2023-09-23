@@ -19,6 +19,8 @@ app = APIRouter(tags=["Users"])
 
 @app.get("/user/profile", response_model=UserResponse)
 async def user_profile(current_user: User = Depends(authenticate)):
+
+    
     return {"message": "User data fetched successfully",
             "statusCode": 200,
             "data": jsonable_encoder(current_user)}

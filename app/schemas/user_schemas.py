@@ -25,7 +25,7 @@ class UserSearchSchema(BaseModel):
     last_name: str
     profile_pic: Optional[str] = None
     is_admin: bool = False
-    lunch_credit_balance: Optional[float] = 0
+    lunch_credit_balance: Optional[int] = 0
 
 
 
