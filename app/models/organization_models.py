@@ -1,8 +1,9 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, DECIMAL, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-
+from uuid import uuid4 as uuid
 from app.db.database import Base
+
 
 class Organization(Base):
     __tablename__ = "organizations"
@@ -19,7 +20,7 @@ class Organization(Base):
     wallets = relationship("OrganizationLaunchWallet", back_populates="organization")
     invites = relationship("OrganizationInvite", back_populates="organization")
     lunches = relationship("Lunch", back_populates="organization")
-  
+
 
 class OrganizationLaunchWallet(Base):
     __tablename__ = "organization_lunch_wallets"
@@ -32,6 +33,7 @@ class OrganizationLaunchWallet(Base):
     is_deleted = Column(Boolean, default=False)
 
     organization = relationship("Organization", back_populates="wallets")
+
 
 class OrganizationInvite(Base):
     __tablename__ = "organization_invites"
