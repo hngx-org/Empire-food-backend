@@ -27,7 +27,7 @@ def withdraw_request(withdraw: Withdraw,
     amount_left = user.lunch_credit_balance - withdraw.amount
     created_at = datetime.now()
     withdraw_amount = withdraw.amount * org_lunch_price
-    new_withdrawal = user_models.Withdrawal(user_id=user.id, status="success", amount=withdraw_amount,
+    new_withdrawal = user_models.Withdrawal(user_id=user.id, status="redeemed", amount=withdraw_amount,
                                             created_at=created_at)
     user_query = db.query(user_models.User).filter(
         user_models.User.id == user.id)
