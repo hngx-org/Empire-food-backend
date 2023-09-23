@@ -133,7 +133,12 @@ async def create_organization(
         'statusCode': 201,
         'data': {
             'name': new_org.name,
-            'id': new_org.id
+            'id': new_org.id,
+            "admin":{
+                'email': current_user.email,
+                'id': current_user.id,
+                'is_admin': current_user.is_admin
+            }
         }
     }
 
