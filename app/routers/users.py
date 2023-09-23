@@ -39,5 +39,3 @@ async def search(name_or_email: str, db: Session = Depends(get_db), current_user
 def all_org_users(db: Session = Depends(get_db), current_user: User = Depends(authenticate)):
     """Returns all users linked to the organization of the current user"""
     users = get_org_users(db, current_user.org_id)
-
-test
