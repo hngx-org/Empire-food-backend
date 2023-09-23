@@ -5,12 +5,9 @@ from passlib.context import CryptContext
 from app.settings.settings import Settings
 from mailjet_rest import Client
 
-<<<<<<< HEAD
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 mailjet = Client(auth=(settings.api_key, settings.api_secret), version='v3.1')
-=======
->>>>>>> d04647ce78be91651b31240b6c90717cc1769bf6
-
 settings = Settings()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -23,10 +20,7 @@ class generateKey:
         return f"{phone}{datetime.date(datetime.now())}{settings.secret_key}"
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> d04647ce78be91651b31240b6c90717cc1769bf6
+ 
 def send_email(receiver: str, sender: str, subject: str, text: str, html: str):
     """Sends an email to the provided recipient.
 
@@ -40,8 +34,14 @@ def send_email(receiver: str, sender: str, subject: str, text: str, html: str):
     data = {
             "Messages": [
                 {
-                    "From": {"Email": sender},
-                    "To": [{"Email": receiver}],
+                    "From": {
+                        "Email": sender
+                        },
+                    "To": [
+                        {
+                            "Email": receiver
+                         }
+                    ],
                     "Subject": subject,
                     "TextPart": text,
                     "HTMLPart": html,
@@ -51,10 +51,6 @@ def send_email(receiver: str, sender: str, subject: str, text: str, html: str):
     }
     
     return mailjet.send.create(data=data)
-<<<<<<< HEAD
-
-=======>>>>>>> d04647ce78be91651b31240b6c90717cc1769bf6
-
 def generate_otp(org_id):
     """Generates a 6-digit OTP for organization invite.
 
