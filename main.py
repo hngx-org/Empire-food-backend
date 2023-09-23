@@ -9,6 +9,7 @@ from app.routers.organizations import router as org_signup
 from app.routers.lunch import app as lunch_app
 from app.routers.bank_account import router as bankdetails_app
 from app.routers.withdrawal import router as withdrawal_router
+from app.routers.redeem_lunch import router as redeem_router
 from app.db.database import create_database
 from decouple import config
 
@@ -23,6 +24,7 @@ v1.include_router(lunch_app)
 v1.include_router(org_signup)
 v1.include_router(bankdetails_app)
 v1.include_router(withdrawal_router)
+v1.include_router(redeem_router)
 ####################################################################################
 
 @v1.get("/health")
