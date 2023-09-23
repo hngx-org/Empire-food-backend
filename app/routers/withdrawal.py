@@ -123,4 +123,4 @@ async def get_all_withdrawals_for_admin(role: user_models.User = Depends(get_adm
 #     return list(ret_table.values())
 
 '''
-
+# handle errors
