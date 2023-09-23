@@ -53,8 +53,7 @@ def send_email(receiver: str, sender: str, subject: str, text: str, html: str):
     return mailjet.send.create(data=data)
 <<<<<<< HEAD
 
-=======
->>>>>>> d04647ce78be91651b31240b6c90717cc1769bf6
+=======>>>>>>> d04647ce78be91651b31240b6c90717cc1769bf6
 
 def generate_otp(org_id):
     """Generates a 6-digit OTP for organization invite.
