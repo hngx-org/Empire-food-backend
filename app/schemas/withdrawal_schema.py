@@ -10,7 +10,7 @@ class WithdrawResponse(BaseModel):
     id: int
     user_id: int
     status: str
-    amount: int
+    amount: float
     created_at: str
 
 

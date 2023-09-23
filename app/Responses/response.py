@@ -13,8 +13,8 @@ class Response:
 
 
 class ResponseClass(BaseModel):
-    message: str
-    statusCode: int
+    message: str = None
+    statusCode: int = None
     data: Optional[dict] = None
 
 
@@ -38,7 +38,7 @@ class SendLunchResponse(ResponseClass):
     data: SendLunchResponseSchema
     
 class WithdrawalResponse(ResponseClass):
-    data: WithdrawResponse
+    data: list[WithdrawResponse]
 
 class AdminWithdrawalResponse(ResponseClass):
     user_id: int

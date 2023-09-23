@@ -40,75 +40,86 @@ def withdraw_request(withdraw: Withdraw,
     return WithdrawalResponse(message="Withdrawal request created successfully", statusCode=201, data=jsonable_encoder(new_withdrawal))
 # handle errors
 
+@router.get('/user/all', status_code=status.HTTP_200_OK, response_model=WithdrawalResponse)
+async def get_all_withdrawals(user: user_models.User = Depends(authenticate), db: Session = Depends(get_db)):
+    """Returns all withdrawals linked to the organization of the current user"""
+    withdrawals = db.query(user_models.Withdrawal).filter(
+        user_models.Withdrawal.user_id == user.id).all()
+
+    return WithdrawalResponse(message="list of withdrawals", statusCode=200, data= jsonable_encoder(withdrawals))
+
+@router.get('/admin/all', status_code=status.HTTP_200_OK,)
+async def get_all_withdrawals_for_admin(role: user_models.User = Depends(get_admin_user), db: Session = Depends(get_db)):
+    """Returns all withdrawals linked to the organization of all users"""
+    ret_table = []
+    all_users = db.query(user_models.User).filter(user_models.User.org_id == role.org_id).all()
+    for user in all_users:
+        withdrawals = db.query(user_models.Withdrawal).filter(
+        user_models.Withdrawal.user_id == user.id).all()
+        if withdrawals == []:
+            continue
+        for w in withdrawals:
+
+            ret_table.append(w)
+    return {
+        "message": "list of withdrawals",
+        "statusCode": 200,
+
+        "data": {
+            "admin_id": role.id,
+            "withdrawals": jsonable_encoder(ret_table)
+        }
+    }
+
+'''
 # @router.get('/user/all', status_code=status.HTTP_200_OK, response_model=list[WithdrawalResponse])
 # async def get_all_withdrawals(user: user_models.User = Depends(authenticate), db: Session = Depends(get_db)):
 #     """Returns all withdrawals linked to the organization of the current user"""
-#     withdrawals = db.query(user_models.Withdrawal).filter(
-#         user_models.Withdrawal.user_id == user.id).all()
+#     withdrawals = (
+#         db.query(user_models.Withdrawal)
+#         .filter(user_models.Withdrawal.user_id == user.id)
+#         .all()
+#     )
 #     return withdrawals
 
 # @router.get('/admin/all', status_code=status.HTTP_200_OK, response_model=list[AdminWithdrawalResponse])
 # async def get_all_withdrawals_for_admin(role: user_models.User = Depends(get_admin_user), db: Session = Depends(get_db)):
 #     """Returns all withdrawals linked to the organization of all users"""
-#     ret_table = []
-#     all_users = db.query(user_models.User).filter(user_models.User.org_id == role.org_id).all()
-#     for user in all_users:
-#         withdrawals = db.query(user_models.Withdrawal).filter(
-#         user_models.Withdrawal.user_id == user.id).all()
-#         ret_table.append({
-#             'user_id': user.id,
-#             'data': [WithdrawResponseSchema(**withdrawal.model_dump()) for withdrawal in withdrawals]
-#         })
-#     return ret_table
-
-
-@router.get('/user/all', status_code=status.HTTP_200_OK, response_model=list[WithdrawResponse])
-async def get_all_withdrawals(user: user_models.User = Depends(authenticate), db: Session = Depends(get_db)):
-    """Returns all withdrawals linked to the organization of the current user"""
-    withdrawals = (
-        db.query(user_models.Withdrawal)
-        .filter(user_models.Withdrawal.user_id == user.id)
-        .all()
-    )
-    return withdrawals
-
-@router.get('/admin/all', status_code=status.HTTP_200_OK, response_model=list[AdminWithdrawalResponse])
-async def get_all_withdrawals_for_admin(role: user_models.User = Depends(get_admin_user), db: Session = Depends(get_db)):
-    """Returns all withdrawals linked to the organization of all users"""
-    query = (
-        db.query(user_models.User)
-        .filter(user_models.User.org_id == role.org_id)
-        .subquery()
-    )
+#     query = (
+#         db.query(user_models.User)
+#         .filter(user_models.User.org_id == role.org_id)
+#         .subquery()
+#     )
     
-    withdrawals = (
-        db.query(
-            user_models.User.id.label("user_id"),
-            user_models.Withdrawal.id,
-            user_models.Withdrawal.status,
-            user_models.Withdrawal.amount,
-            user_models.Withdrawal.created_at
-        )
-        .join(query, user_models.User.id == query.c.id)
-        .filter(user_models.Withdrawal.is_deleted == False)  # Filter out deleted withdrawals
-        .all()
-    )
+#     withdrawals = (
+#         db.query(
+#             user_models.User.id.label("user_id"),
+#             user_models.Withdrawal.id,
+#             user_models.Withdrawal.status,
+#             user_models.Withdrawal.amount,
+#             user_models.Withdrawal.created_at
+#         )
+#         .join(query, user_models.User.id == query.c.id)
+#         .filter(user_models.Withdrawal.is_deleted == False)  # Filter out deleted withdrawals
+#         .all()
+#     )
     
-    ret_table = {}
+#     ret_table = {}
     
-    for withdrawal in withdrawals:
-        user_id = withdrawal.user_id
-        if user_id not in ret_table:
-            ret_table[user_id] = {"user_id": user_id, "data": []}
+#     for withdrawal in withdrawals:
+#         user_id = withdrawal.user_id
+#         if user_id not in ret_table:
+#             ret_table[user_id] = {"user_id": user_id, "data": []}
         
-        withdrawal_data = {
-            "id": withdrawal.id,
-            "status": withdrawal.status,
-            "amount": withdrawal.amount,
-            "created_at": withdrawal.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-        }
+#         withdrawal_data = {
+#             "id": withdrawal.id,
+#             "status": withdrawal.status,
+#             "amount": withdrawal.amount,
+#             "created_at": withdrawal.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+#         }
         
-        ret_table[user_id]["data"].append(withdrawal_data)
+#         ret_table[user_id]["data"].append(withdrawal_data)
     
-    return list(ret_table.values())
+#     return list(ret_table.values())
 
+'''

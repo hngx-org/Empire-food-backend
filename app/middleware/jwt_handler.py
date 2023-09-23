@@ -15,7 +15,7 @@ oauth2_scheme = JWTBearer()
 def create_token(_id: int, expiry_time: int) -> str:
     payload = {
         "id": _id,
-        "expires": time.time() + expiry_time
+        "expires": time.time() + int(expiry_time)
     }
     token = jwt.encode(payload, setting.secret_key, setting.algorithm)
     return token
