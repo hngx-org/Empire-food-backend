@@ -21,7 +21,7 @@ def package_app(ctx: Context, path: str):
     """create a tarball of the application"""
     local('rm -rf .deployments', echo=True)
     local('mkdir -p .deployments', echo=True)
-    local(f"tar -czvf .deployments/backend.tar.gz --exclude='./.git/*' --exclude='Pipfile*' --exclude='env.sample' --exclude='.vscode' --exclude='*__pycache__*' {path}", echo=True)
+    local(f"tar -czvf .deployments/backend.tar.gz --exclude='.git' --exclude='.venv' --exclude='Pipfile*' --exclude='env.sample' --exclude='.vscode' --exclude='*__pycache__*' {path}", echo=True)
 
 
 @task
