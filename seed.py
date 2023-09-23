@@ -1,5 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from os import getenv
+import itertools
+from pprint import pprint
 
 from faker import Faker
 from pydantic import BaseModel
@@ -93,6 +95,7 @@ def seed_orgs() -> list[Org]:
             created_at=fake.date_time(),
             updated_at=fake.date_time(),
         )
+        pprint(org)
         orgs.append(org)
 
     return orgs
@@ -103,24 +106,42 @@ def seed_users() -> tuple[list[Org], list[User]]:
     orgs = seed_orgs()
 
     users: list[User] = []
+    admins: list[User] = []
     for i in range(NUM_RECORDS):
         user = User(
             id=i + 1,
             first_name=fake.first_name(),
             last_name=fake.last_name(),
             email=fake.email(),
-            password_hash=hash_password(fake.password()),
+            password_hash=fake.password(),
+            phone=str(fake.random.randint(1000000000, 9999999999)),
+            org_id=i + 1,
+            is_admin=True
+        )
+        pprint(user)
+        user.password_hash = hash_password(user.password_hash)
+        admins.append(user)
+
+    for i in range(NUM_RECORDS, NUM_RECORDS * 3):
+        user = User(
+            id=i + 1,
+            first_name=fake.first_name(),
+            last_name=fake.last_name(),
+            email=fake.email(),
+            password_hash=fake.password(),
             phone=str(fake.random.randint(1000000000, 9999999999)),
             org_id=fake.random.choice(orgs).id,
         )
+        pprint(user)
+        user.password_hash = hash_password(user.password_hash)
         users.append(user)
 
-    return orgs, users
+    return orgs, list(users)
 
 
-def seed_org_wallets() -> list[OrgWallet]:
+def seed_org_wallets() -> tuple[list[Org], list[User], list[OrgWallet]]:
     """generate org wallets"""
-    orgs, _ = seed_users()
+    orgs, users = seed_users()
 
     org_wallets: list[OrgWallet] = []
     for i in range(NUM_RECORDS):
@@ -132,81 +153,98 @@ def seed_org_wallets() -> list[OrgWallet]:
             updated_at=fake.date_time(),
         )
         org_wallets.append(org_wallet)
-        print(org_wallet)
-    return org_wallets
+        pprint(org_wallet)
+    return orgs, users, org_wallets
 
 
-def seed_invites() -> list[OrgInvite]:
-    """generates invites"""
-    orgs = seed_orgs()
+# def seed_invites() -> list[OrgInvite]:
+#     """generates invites"""
+#     orgs, users, org_wallets = seed_org_wallets()
 
-    invites: list[OrgInvite] = []
-    for i in range(NUM_RECORDS):
-        invite = OrgInvite(
-            id=i + 1,
-            email=fake.email(),
-            token=fake.uuid4(),
-            ttl=fake.date_time(),
-            org_id=fake.random.choice(orgs).id,
-            created_at=fake.date_time(),
-            updated_at=fake.date_time(),
-        )
-        print(invite)
-        invites.append(invite)
+#     invites: list[OrgInvite] = []
+#     for i in range(NUM_RECORDS * 3):
+#         user = fake.random.choice(users)
+#         org = fake.random.choice(orgs)
+#         invite = OrgInvite(
+#             id=i + 1,
+#             email=user.email,
+#             token=fake.uuid4(),
+#             ttl=datetime.now() + timedelta(minutes=30),
+#             org_id=org.id,
+#             created_at=datetime.now(),
+#             updated_at=datetime.now(),
+#         )
+#         print(invite)
+#         invites.append(invite)
 
-    return invites
+#     return invites
 
 
-def seed_withdrawals() -> list[Withdrawal]:
+def seed_withdrawals() -> tuple[list[Org], list[User], list[OrgWallet], list[Withdrawal]]:
     """generates withdrawals"""
-    _, users = seed_users()
+    orgs, users, wallets = seed_org_wallets()
 
     withdrawals: list[Withdrawal] = []
-    for i in range(NUM_RECORDS):
+    for i in range(NUM_RECORDS * 2):
+        user = fake.random.choice(users)
+        org = list(itertools.filterfalse(
+            lambda org: org.id != user.org_id, orgs))[0]
+        wallet = list(itertools.filterfalse(
+            lambda wallet: wallet.id != org.id, wallets))[0]
+        amount = fake.pyfloat(left_digits=5, right_digits=2, positive=True)
+        while amount > wallet.balance:
+            amount = fake.pyfloat(left_digits=5, right_digits=2, positive=True)
+
+        for wall in wallets:
+            if wall.id == wallet.id:
+                balance = wall.balance - amount
+                wallet.balance = float(f"{balance:.2f}")
+        pprint(wallet)
         withdrawal = Withdrawal(
             id=i + 1,
-            user_id=fake.random.choice(users).id,
-            amount=fake.pyfloat(left_digits=8, right_digits=2, positive=True),
-            created_at=fake.date_time(),
-            updated_at=fake.date_time(),
+            user_id=user.id,
+            amount=amount,
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
         )
-        print(withdrawal)
+        pprint(withdrawal)
         withdrawals.append(withdrawal)
 
-    return withdrawals
+    return orgs, users, wallets, withdrawals
 
 
-def seed_lunches() -> list[Lunch]:
+def seed_lunches() -> tuple[list[Org], list[User], list[OrgWallet], list[Withdrawal], list[Lunch]]:
     """generates lunches"""
-    orgs, users = seed_users()
+    orgs, users, wallets, withdrawals = seed_withdrawals()
 
     lunches: list[Lunch] = []
-    for i in range(NUM_RECORDS):
+    for i in range(NUM_RECORDS * 2):
+        sender = fake.random.choice(users)
+        org_users = list(itertools.filterfalse(
+            lambda user: user.org_id != sender.org_id and user != sender, users))
+        receiver = fake.random.choice(org_users)
+
         lunch = Lunch(
             id=i + 1,
-            org_id=fake.random.choice(orgs).id,
+            org_id=sender.org_id,
             sender_id=fake.random.choice(users).id,
-            receiver_id=fake.random.choice(users).id,
+            receiver_id=receiver.id,
             quantity=fake.random.randint(1, 5),
             note=fake.sentence(nb_words=4),
-            created_at=fake.date_time(),
-            updated_at=fake.date_time(),
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
         )
-        print(lunch)
+        pprint(lunch)
         lunches.append(lunch)
 
-    return lunches
+    return orgs, users, wallets, withdrawals, lunches
 
 
 def populate_db():
     """populate the database"""
     db = get_db_unyield()
 
-    orgs, users = seed_users()
-    org_wallets = seed_org_wallets()
-    invites = seed_invites()
-    withdrawals = seed_withdrawals()
-    lunches = seed_lunches()
+    orgs, users, wallets, withdrawals, lunches = seed_lunches()
 
     for org in orgs:
         db_org = Organization(**org.__dict__)
@@ -220,17 +258,11 @@ def populate_db():
         db.commit()
         db.refresh(db_user)
 
-    for org_wallet in org_wallets:
+    for org_wallet in wallets:
         db_org_wallet = OrganizationLaunchWallet(**org_wallet.__dict__)
         db.add(db_org_wallet)
         db.commit()
         db.refresh(db_org_wallet)
-
-    for invite in invites:
-        db_invite = OrganizationInvite(**invite.__dict__)
-        db.add(db_invite)
-        db.commit()
-        db.refresh(db_invite)
 
     for withdrawal in withdrawals:
         db_withdrawal = DB_Withdrawal(**withdrawal.__dict__)
