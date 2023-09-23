@@ -40,3 +40,4 @@ def all_org_users(db: Session = Depends(get_db), current_user: User = Depends(au
     """Returns all users linked to the organization of the current user"""
     users = get_org_users(db, current_user.org_id)
 
+test
