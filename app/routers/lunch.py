@@ -109,6 +109,7 @@ async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(auth
                 )
             else:
                 lunch_obj.redeemed = True
+                user.lunch_credit_balance += int(lunch_obj.quantity)
             
         else:
             return GetLunchResponse(
