@@ -24,6 +24,8 @@ class UserSearchSchema(BaseModel):
     first_name: str
     last_name: str
     profile_pic: Optional[str] = None
+    is_admin: bool = False
+    lunch_credit_balance: Optional[int] = 0
 
 
 

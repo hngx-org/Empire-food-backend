@@ -4,7 +4,7 @@ from app.services.user_services import create_user, hash_password
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
-from app.middleware.authenticate import authenticate
+from app.middleware.authenticate import authenticate, get_admin_user
 from app.db.database import get_db
 from app.services.user_services import (
     search_user_by_name_or_email,
@@ -19,6 +19,8 @@ app = APIRouter(tags=["Users"])
 
 @app.get("/user/profile", response_model=UserResponse)
 async def user_profile(current_user: User = Depends(authenticate)):
+
+    
     return {"message": "User data fetched successfully",
             "statusCode": 200,
             "data": jsonable_encoder(current_user)}
@@ -38,6 +40,8 @@ async def search(name_or_email: str, db: Session = Depends(get_db), current_user
 def all_org_users(db: Session = Depends(get_db), current_user: User = Depends(authenticate)):
     """Returns all users linked to the organization of the current user"""
     users = get_org_users(db, current_user.org_id)
+
+    return UserSearchResponse(message="List all users successful", statusCode=200, data=jsonable_encoder(users))
 
 
 @app.post('/user/forget-password', status_code=status.HTTP_200_OK)
@@ -93,3 +97,15 @@ async def reset_password(
     }
 
 
+@app.delete("/admin/user/{user_id}", response_model=UserResponse)
+async def remove_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_admin_user)):
+    """Removes a user from the organization"""
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    db.delete(user)
+    db.commit()
+    return UserResponse(message="User removed successfully", statusCode=200, data=None)

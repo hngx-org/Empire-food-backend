@@ -49,7 +49,8 @@ def create_user(db: Session, user: UserCreate):
             first_name=user.first_name,
             last_name=user.last_name,
             phone=user.phone_number,
-            is_admin=False
+            is_admin=False,
+            lunch_credit_balance=0
         )
         db.add(new_user)
         db.commit()
