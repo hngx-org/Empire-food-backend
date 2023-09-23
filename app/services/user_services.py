@@ -14,21 +14,31 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def create_user(db: Session, user: UserCreate):
 
     if db.query(User).filter(User.email == user.email).first():
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail='User already exists')
-    new_user = User(
-        email=user.email,
-        password_hash=hash_password(user.password),
-        first_name=user.first_name,
-        last_name=user.last_name,
-        phone=user.phone_number,
-        is_admin=False
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+        return None, HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail='User already exists'
+        )
+    try:
 
-    return new_user
+        new_user = User(
+            email=user.email,
+            password_hash=hash_password(user.password),
+            first_name=user.first_name,
+            last_name=user.last_name,
+            phone=user.phone_number,
+            is_admin=False
+        )
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+
+        return new_user, None
+    except Exception as e:
+        print(e)
+        return None, HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail='Failed to create user'
+        )
 
 
 def get_user(db: Session, user_id: int):

@@ -1,26 +1,47 @@
+#sendlunch router created by @dyagee
+
+from app.Responses.response import GetLunchResponse
+from app.db.database import get_db
+from  app.schemas.lunch_schemas import SendLunch
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import Annotated, List
-
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.models.lunch_models import Lunch
-
-from app.middleware.authenticate import authenticate
-
 from app.models.user_models import User
-from fastapi.encoders import jsonable_encoder
 from app.middleware.authenticate import authenticate
-from app.Responses.response import GetLunchResponse, GetAllLunchesResponse
-from app.services.lunch_services import fetch_lunch, get_user_lunches
+from app.Responses.response import GetLunchResponse, GetAllLunchesResponse,SendLunchResponse
+from app.services.lunch_services import sendLunch,fetch_lunch, get_user_lunches
 
 app = APIRouter(tags=["Lunch"])
+
+@app.post("/lunch/send", response_model=SendLunchResponse)
+async def send_lunch( data:SendLunch,current_user:User=Depends(authenticate), db:Session=Depends(get_db)):
+    """
+        Send lunch to an authenticated user.
+    """
+    # extract sender id and send the lunch
+    
+    user_id = current_user.id
+
+    #check for the total max amount, then send
+    resp = sendLunch(db=db,data=data,user_id=user_id)
+    if resp:
+      response = {
+            "message": "Lunch request created successfully",
+            "statusCode": 201,
+            "data": jsonable_encoder(resp)
+          }
+      return response
+    else:
+      raise HTTPException(status_code=404,detail="An error Occured; max of 4 lunch can be sent once")
+
 
 @app.get("/lunch/all", status_code=200, response_model=GetAllLunchesResponse)
 async def get_all_lunches(
     user: User = Depends(authenticate),
-    db : Session = Depends(get_db)
-):
+    db : Session = Depends(get_db)):
     """
         Gets all Lunches that have not been redeemed by the user.
         Params: user_id
@@ -54,7 +75,7 @@ async def get_lunch(lunch_id: int, user: User = Depends(authenticate), db: Sessi
 
 
 # Redeem lunch by updating 'redeemed' field
-@app.put('/lunch/redeem/')
+@app.put('/lunch/redeem')
 async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(authenticate), session = Depends(get_db)):
     """
     Redeem lunch by updating 'redeemed' field
