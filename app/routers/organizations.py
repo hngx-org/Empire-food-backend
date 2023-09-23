@@ -1,4 +1,7 @@
 import datetime
+import secrets
+import string
+from app.middleware.authenticate import authenticate
 from app.services.user_services import hash_password, compare_password
 from app.middleware.jwt_handler import create_access_token
 from app.services.helper import generate_otp, send_otp_to_email, OTPVerificationMixin
