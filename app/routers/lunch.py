@@ -11,7 +11,7 @@ from app.db.database import get_db
 from app.models.lunch_models import Lunch
 from app.models.user_models import User
 from app.middleware.authenticate import authenticate
-from app.Responses.response import GetLunchResponse, GetAllLunchesResponse,SendLunchResponse
+from app.Responses.response import GetLunchResponse, GetAllLunchesResponse,SendLunchResponse,RedeemLunchResponse
 from app.services.lunch_services import sendLunch,fetch_lunch, get_user_lunches
 
 app = APIRouter(tags=["Lunch"])
@@ -78,7 +78,7 @@ async def get_lunch(lunch_id: int, user: User = Depends(authenticate), db: Sessi
 
 
 # Redeem lunch by updating 'redeemed' field
-@app.put('/lunch/redeem')
+@app.put('/lunch/redeem', response_model = RedeemLunchResponse)
 async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(authenticate), session = Depends(get_db)):
     """
     Redeem lunch by updating 'redeemed' field
@@ -91,34 +91,34 @@ async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(auth
 
         # Check if current user owns the lunch obj
         if user.id == lunch_obj.sender_id:
-            return GetLunchResponse(
-                message="You cannot redeem your own lunch",
-                statusCode=status.HTTP_403_FORBIDDEN,
-                data=None
-            )
+            return {
+                'message':"You cannot redeem your own lunch",
+                'statusCode':status.HTTP_403_FORBIDDEN,
+                'data':{}
+            }
         
         # Update redeemed to True and save changes into DB
         elif user.id == lunch_obj.receiver_id:
             if lunch_obj.redeemed:
-                return GetLunchResponse(
-                    message="Lunch has already been redeemed",
-                    statusCode=status.HTTP_400_BAD_REQUEST,
-                    data=None
-                )
+                return {
+                    'message':"Lunch has already been redeemed",
+                    'statusCode':status.HTTP_400_BAD_REQUEST,
+                    'data':{}
+                }
             else:
                 lunch_obj.redeemed = True
 
-                return GetLunchResponse(
-                    message="Lunch redeemed successfully",
-                    statusCode=status.HTTP_201_CREATED,
-                    data=None
-                )
+                return {
+                    'message':"Lunch redeemed successfully",
+                    'statusCode':status.HTTP_201_CREATED,
+                    'data':{}
+                }
             
         else:
-            return GetLunchResponse(
-                    message="You cannot redeem this lunch",
-                    statusCode=status.HTTP_405_METHOD_NOT_ALLOWED,
-                    data=None
-            )
+            return {
+                    'message':"You cannot redeem this lunch",
+                    'statusCode':status.HTTP_405_METHOD_NOT_ALLOWED,
+                    'data':{}
+            }
         
         

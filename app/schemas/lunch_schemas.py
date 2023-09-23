@@ -39,3 +39,8 @@ class LunchResponseSchema(BaseModel):
     created_at: str
     org_id: int | None = None
     id : int
+class RedeemLunchResponseSchema(BaseModel):
+    smt: dict | None = None
+  
+
+
