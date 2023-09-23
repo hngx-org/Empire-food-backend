@@ -63,7 +63,7 @@ class Withdrawal(BaseModel):
     id: int
     user_id: int
     amount: float
-    status: Enum('success', 'pending') = 'pending'
+    status: Enum('redeemed', 'not_redeemed') = 'not_redeemed'
     created_at: datetime
     updated_at: datetime
     is_deleted: bool = False
