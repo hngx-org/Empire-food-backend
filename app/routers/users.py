@@ -13,6 +13,7 @@ from app.services.user_services import (
 from app.models.user_models import User
 from app.Responses.response import UserResponse, UserSearchResponse
 
+
 app = APIRouter(tags=["Users"])
 
 
