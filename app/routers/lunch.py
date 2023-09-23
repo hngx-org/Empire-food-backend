@@ -35,7 +35,7 @@ async def send_lunch( data:SendLunch,current_user:User=Depends(authenticate), db
           }
       return response
     else:
-      raise HTTPException(status_code=404,detail="An error Occured; max of 4 lunch can be sent once")
+      raise HTTPException(status_code=404,detail="Sorry, you can only send a maximum of 4 lunches at a time")
 
 
 @app.get("/lunch/all", status_code=200, response_model=GetAllLunchesResponse)
@@ -54,7 +54,7 @@ async def get_all_lunches(
     response = {
         "message" : "Lunches retrieved successfully",
         "statusCode" : 200,
-        "data" : lunches
+        "data" : jsonable_encoder(lunches)
     }
 
     return response
@@ -70,7 +70,11 @@ async def get_lunch(lunch_id: int, user: User = Depends(authenticate), db: Sessi
     except Exception:
         raise HTTPException(status_code=404, detail="Error: Lunch not found")
     else:
-        return response
+        return {
+            "message": "Lunch retrieved successfully",
+            "statusCode": 200,
+            "data": response
+        }
 
 
 

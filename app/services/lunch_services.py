@@ -41,7 +41,7 @@ def get_user_lunches(db: Session, user_id: int):
                     )
                 )\
                 .all()
-
+    print(lunches)
     return lunches
 
 def fetch_lunch(db: Session, lunch_id: int):
