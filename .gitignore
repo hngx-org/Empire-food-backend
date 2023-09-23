@@ -3,6 +3,12 @@
 __pycache__/
 *.py[cod]
 *$py.class
+bin/
+lib*
+pyvenv.cfg
+.idea/
+include/
+
 database.sqlite3
 database.sqlite3-journal
 database.db

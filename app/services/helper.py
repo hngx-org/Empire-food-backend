@@ -5,7 +5,6 @@ from passlib.context import CryptContext
 from app.settings.settings import Settings
 from mailjet_rest import Client
 
-
 settings = Settings()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -14,8 +13,8 @@ mailjet = Client(auth=(settings.email_api_key, settings.email_api_secret), versi
 
 class generateKey:
     @staticmethod
-    def return_value(phone):
-        return f"{phone}{datetime.date(datetime.now())}{settings.secret_key}"
+    def return_value(phone, email):
+        return f"{phone}-{email}{datetime.date(datetime.now())}{settings.secret_key}"
 
 
 def send_email(receiver: str, sender: str, subject: str, text: str, html: str):
@@ -48,17 +47,19 @@ def send_email(receiver: str, sender: str, subject: str, text: str, html: str):
     }
     return mailjet.send.create(data=data)
 
-def generate_otp(org_id):
+
+def generate_otp(org_id, email):
     """Generates a 6-digit OTP for organization invite.
 
     Args:
         org_id (int): The organization ID.
+        email (EmailStr): the email of the user to be encoded
 
     Returns:
         str: The generated OTP.
     """
     keygen = generateKey()
-    key_bytes = keygen.return_value(org_id).encode()
+    key_bytes = keygen.return_value(org_id, email).encode()
     key_base32 = base64.b32encode(key_bytes).decode('utf-8')
     return key_base32
 
@@ -67,31 +68,33 @@ class OTPVerificationMixin:
     """A mixin class for OTP verification."""
 
     @staticmethod
-    def generate_key(org_id):
+    def generate_key(org_id, email):
         """Generates a 6-digit OTP for organization invite.
 
         Args:
             org_id (int): The organization ID.
+            email (EmailStr): the email of the user to be encoded
 
         Returns:
             str: The generated OTP.
         """
         keygen = generateKey()
-        key_bytes = keygen.return_value(org_id).encode()
+        key_bytes = keygen.return_value(org_id, email).encode()
         key_base32 = base64.b32encode(key_bytes).decode('utf-8')
         return key_base32
 
-    def verify_otp(self, otp, org_id):
+    def verify_otp(self, otp, org_id, email):
         """Verifies the provided OTP.
 
         Args:
             otp (str): The provided OTP.
             org_id (int): The organization ID.
+            email (str): user email.
 
         Returns:
             bool: True if the OTP is valid, False otherwise.
         """
-        key = self.generate_key(org_id)
+        key = self.generate_key(org_id, email)
         OTP = pyotp.TOTP(key, interval=int(settings.OTP_INTERVAL))
         return OTP.verify(otp)
 
@@ -117,7 +120,7 @@ def send_otp_to_email(sender, email, org_id, org_name):
         org_name (str): The organization name.
         org_id (int): The organization ID.
     """
-    key = generate_otp(org_id)
+    key = generate_otp(org_id, email)
     OTP = pyotp.TOTP(key, interval=int(settings.OTP_INTERVAL))
     otp = OTP.now()
     subject = f"Invitation to join {org_name} organization"
