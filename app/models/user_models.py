@@ -30,7 +30,7 @@ class User(Base):
     phone = Column(String(20))
     password_hash = Column(String(255), nullable=False)
     is_admin = Column(Boolean)
-    lunch_credit_balance = Column(Integer)
+    lunch_credit_balance = Column(Integer, default=0)
     refresh_token = Column(String(255))
     bank_number = Column(String(255))
     bank_code = Column(String(255))

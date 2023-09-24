@@ -63,6 +63,7 @@ async def register_user_in_organization(
         phone=user.phone_number,
         is_admin=False,
         org_id=org_instance.org_id,
+        lunch_credit_balance=0,
     )
     db.add(new_user)
     db.delete(org_instance)
