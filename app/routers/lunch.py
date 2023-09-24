@@ -80,14 +80,13 @@ async def get_lunch(lunch_id: int, user: User = Depends(authenticate), db: Sessi
 
 # Redeem lunch by updating 'redeemed' field
 @app.put('/lunch/redeem')
-async def redeem_lunch(lunch_ids: List[str] = Query(), user: User = Depends(authenticate), db: Session = Depends(get_db)):
+async def redeem_lunch(lunch_ids: List[int] = Query(), user: User = Depends(authenticate), db: Session = Depends(get_db)):
     """
     Redeem lunch by updating 'redeemed' field
     """
 
     for lunch_id in lunch_ids:
     # Get lunch obj using id
-        # lunch_obj = session.query(lunch_models.Lunch).filter(lunch_models.Lunch.receiver_id == user.id).first()
         lunch_obj = db.query(Lunch).get(lunch_id)
 
         # Check if current user owns the lunch obj
