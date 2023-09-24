@@ -1,14 +1,18 @@
 import base64
-import pyotp
 from datetime import datetime
-from passlib.context import CryptContext
-from app.settings.settings import Settings
+
+import pyotp
 from mailjet_rest import Client
+from passlib.context import CryptContext
+
+from app.settings.settings import Settings
 
 settings = Settings()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-mailjet = Client(auth=(settings.email_api_key, settings.email_api_secret), version='v3.1')
+mailjet = Client(
+    auth=(settings.email_api_key, settings.email_api_secret), version="v3.1"
+)
 
 
 class generateKey:
@@ -28,7 +32,7 @@ def send_email(receiver: str, sender: str, subject: str, text: str, html: str):
         html (str): The email body in HTML format.
     """
     data = {
-        'Messages': [
+        "Messages": [
             {
                 "From": {
                     "Email": sender,
@@ -41,7 +45,7 @@ def send_email(receiver: str, sender: str, subject: str, text: str, html: str):
                 "Subject": subject,
                 "TextPart": text,
                 "HTMLPart": html,
-                "CustomID": "AppGettingStartedTest"
+                "CustomID": "AppGettingStartedTest",
             }
         ]
     }
@@ -60,8 +64,7 @@ def generate_otp(org_id, email):
     """
     keygen = generateKey()
     key_bytes = keygen.return_value(org_id, email).encode()
-    key_base32 = base64.b32encode(key_bytes).decode('utf-8')
-    return key_base32
+    return base64.b32encode(key_bytes).decode("utf-8")
 
 
 class OTPVerificationMixin:
@@ -80,8 +83,7 @@ class OTPVerificationMixin:
         """
         keygen = generateKey()
         key_bytes = keygen.return_value(org_id, email).encode()
-        key_base32 = base64.b32encode(key_bytes).decode('utf-8')
-        return key_base32
+        return base64.b32encode(key_bytes).decode("utf-8")
 
     def verify_otp(self, otp, org_id, email):
         """Verifies the provided OTP.
@@ -167,7 +169,10 @@ def send_otp_to_email(sender, email, org_id, org_name):
     """
 
     # Call the send_email function to send the email
-    return send_email(email, 'sanctuspeter@gmail.com', subject, "", html_content), otp
+    return (
+        send_email(email, "sanctuspeter@gmail.com", subject, "", html_content),
+        otp,
+    )
 
 
 def send_forget_password_email(email, otp_var):
@@ -220,4 +225,6 @@ def send_forget_password_email(email, otp_var):
     </body>
     </html>
     """
-    return send_email(email, 'sanctuspeter@gmail.com', subject, "", html_content)
+    return send_email(
+        email, "sanctuspeter@gmail.com", subject, "", html_content
+    )

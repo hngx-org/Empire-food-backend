@@ -1,10 +1,12 @@
 from pydantic import BaseModel
 
+
 class Withdraw(BaseModel):
     bank_number: str | None = ""
     bank_code: str | None = ""
     bank_name: str | None = ""
-    amount: int 
+    amount: int
+
 
 class WithdrawResponse(BaseModel):
     id: int

@@ -1,6 +1,5 @@
-# database.py
+# Defines the database engine
 from sqlalchemy import create_engine
-# from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, declarative_base
 from decouple import config
 
@@ -21,12 +20,11 @@ def get_db_engine():
     else:
         DATABASE_URL = "sqlite:///./database.db"
 
-    if DB_TYPE == "sqlite":
-        db_engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-    else:
-        db_engine = create_engine(DATABASE_URL)
-
-    return db_engine
+    return (
+        create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+        if DB_TYPE == "sqlite"
+        else create_engine(DATABASE_URL)
+    )
 
 
 db_engine = get_db_engine()
@@ -51,5 +49,4 @@ def get_db():
 
 def get_db_unyield():
     create_database()
-    db = SessionLocal()
-    return db
+    return SessionLocal()

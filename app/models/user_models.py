@@ -1,4 +1,13 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, DECIMAL, Enum, ForeignKey
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Boolean,
+    DateTime,
+    DECIMAL,
+    Enum,
+    ForeignKey,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -9,7 +18,11 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    org_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"), nullable=True)
+    org_id = Column(
+        Integer,
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=True,
+    )
     first_name = Column(String(255))
     last_name = Column(String(255))
     profile_pic = Column(String(255))  # Assuming a URL
@@ -17,7 +30,7 @@ class User(Base):
     phone = Column(String(20))
     password_hash = Column(String(255), nullable=False)
     is_admin = Column(Boolean)
-    lunch_credit_balance = Column(Integer)
+    lunch_credit_balance = Column(Integer, default=0)
     refresh_token = Column(String(255))
     bank_number = Column(String(255))
     bank_code = Column(String(255))
@@ -31,8 +44,6 @@ class User(Base):
 
     organization = relationship("Organization", back_populates="users")
     withdrawals = relationship("Withdrawal", back_populates="user")
-    # sender_lunches = relationship("Lunch", back_populates="sender", foreign_keys="[Lunch.sender_id]",)
-    # receiver_lunches = relationship("Lunch", back_populates="receiver", foreign_keys="[Lunch.receiver_id]")
 
 
 class Withdrawal(Base):
@@ -40,7 +51,11 @@ class Withdrawal(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
-    status = Column(Enum("redeemed", "not_redeemed", name="withdrawal_status"), nullable=False, default="not_redeemed")
+    status = Column(
+        Enum("redeemed", "not_redeemed", name="withdrawal_status"),
+        nullable=False,
+        default="not_redeemed",
+    )
     amount = Column(DECIMAL(10, 2), nullable=False)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
