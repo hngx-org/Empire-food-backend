@@ -40,17 +40,16 @@ async def send_lunch( data:SendLunch,current_user:User=Depends(authenticate), db
 
 
 @app.get("/lunch/all", status_code=200, response_model=GetAllLunchesResponse)
-async def get_all_lunches(
+async def get_all_lunches(query : str= None,
     user: User = Depends(authenticate),
     db : Session = Depends(get_db)):
     """
         Gets all Lunches that have not been redeemed by the user.
         Params: user_id
     """
-
     user_id = user.id    
 
-    lunches = get_user_lunches(db=db, user_id=user_id)
+    lunches = get_user_lunches(db=db, user_id=user_id, param=query)
 
     response = {
         "message" : "Lunches retrieved successfully",

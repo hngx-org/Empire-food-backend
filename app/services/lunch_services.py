@@ -43,16 +43,15 @@ def sendLunch(db:Session, data:SendLunch, user_id:int, org_id:int):
     return res, None
   return None, HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Sorry, your lunch could not be sent")
 
-def get_user_lunches(db: Session, user_id: int):
+def get_user_lunches(db: Session, user_id: int, param: str = None):
     
-    lunches = db.query(Lunch)\
-                .filter(
-                    or_(
-                        Lunch.receiver_id == user_id, 
-                        Lunch.sender_id == user_id
-                    )
-                )\
-                .all()
+    if param == "sent":
+        lunches = db.query(Lunch).filter(Lunch.sender_id == user_id).all()
+    elif param == "recieved":
+        lunches = db.query(Lunch).filter(Lunch.receiver_id == user_id).all()
+    else:
+        lunches = db.query(Lunch).filter(Lunch.receiver_id == user_id).all()
+    
     return lunches
 
 def fetch_lunch(db: Session, lunch_id: int):
