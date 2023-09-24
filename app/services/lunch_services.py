@@ -47,10 +47,11 @@ def get_user_lunches(db: Session, user_id: int, param: str = None):
     
     if param == "sent":
         lunches = db.query(Lunch).filter(Lunch.sender_id == user_id).all()
-    elif param == "recieved":
+    elif param == "received":
         lunches = db.query(Lunch).filter(Lunch.receiver_id == user_id).all()
     else:
-        lunches = db.query(Lunch).filter(Lunch.receiver_id == user_id).all()
+        # check both lucnhes sent and recieved
+        lunches = db.query(Lunch).filter(or_(Lunch.sender_id == user_id, Lunch.receiver_id == user_id)).all()
     
     return lunches
 
