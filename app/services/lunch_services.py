@@ -67,11 +67,15 @@ def sendLunch(db: Session, data: SendLunch, user_id: int, org_id: int):
 
 
 def get_user_lunches(db: Session, user_id: int, param: str = None):
-    return (
-        db.query(Lunch).filter(Lunch.sender_id == user_id).all()
-        if param == "sent"
-        else db.query(Lunch).filter(Lunch.receiver_id == user_id).all()
-    )
+    if param == "sent":
+        lunches = db.query(Lunch).filter(Lunch.sender_id == user_id).all()
+    elif param == "received":
+        lunches = db.query(Lunch).filter(Lunch.receiver_id == user_id).all()
+    else:
+        # check both lucnhes sent and recieved
+        lunches = db.query(Lunch).filter(or_(Lunch.sender_id == user_id, Lunch.receiver_id == user_id)).all()
+    
+    return lunches
 
 
 def fetch_lunch(db: Session, lunch_id: int):
