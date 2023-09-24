@@ -1,7 +1,15 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, DECIMAL, ForeignKey
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Boolean,
+    DateTime,
+    DECIMAL,
+    ForeignKey,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from uuid import uuid4 as uuid
+
 from app.db.database import Base
 
 
@@ -17,7 +25,9 @@ class Organization(Base):
     is_deleted = Column(Boolean, default=False)
 
     users = relationship("User", back_populates="organization")
-    wallets = relationship("OrganizationLaunchWallet", back_populates="organization")
+    wallets = relationship(
+        "OrganizationLaunchWallet", back_populates="organization"
+    )
     invites = relationship("OrganizationInvite", back_populates="organization")
     lunches = relationship("Lunch", back_populates="organization")
 
@@ -27,7 +37,9 @@ class OrganizationLaunchWallet(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     balance = Column(DECIMAL(10, 2), nullable=False, default=0.00)
-    org_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"))
+    org_id = Column(
+        Integer, ForeignKey("organizations.id", ondelete="CASCADE")
+    )
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
     is_deleted = Column(Boolean, default=False)
@@ -42,7 +54,9 @@ class OrganizationInvite(Base):
     email = Column(String(255), nullable=False)
     token = Column(String(255), nullable=False)
     ttl = Column(DateTime, nullable=False)
-    org_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"))
+    org_id = Column(
+        Integer, ForeignKey("organizations.id", ondelete="CASCADE")
+    )
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
     is_deleted = Column(Boolean, default=False)
