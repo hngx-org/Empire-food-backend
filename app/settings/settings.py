@@ -1,5 +1,6 @@
 from decouple import config
 
+
 class Settings:
     secret_key: str = config("SECRET_KEY")
     algorithm: str = "HS256"
