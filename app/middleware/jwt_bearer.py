@@ -1,5 +1,5 @@
-from fastapi import Request, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import HTTPException, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 
 class JWTBearer(HTTPBearer):
@@ -8,8 +8,8 @@ class JWTBearer(HTTPBearer):
         Initializes a JWTBearer instance.
 
         Args:
-            auto_error (bool, optional): Determines whether an error should be automatically raised
-                if the authentication fails.
+            auto_error (bool, optional): Determines whether an error should be
+                automatically raised if the authentication fails.
                 Defaults to True.
         """
         super(JWTBearer, self).__init__(auto_error=auto_error)
@@ -27,10 +27,15 @@ class JWTBearer(HTTPBearer):
         Returns:
             str: The JWT token extracted from the request.
         """
-        credentials: HTTPAuthorizationCredentials = await super(JWTBearer, self).__call__(request)
-        if credentials:
-            if not credentials.scheme == "Bearer":
-                raise HTTPException(status_code=403, detail="Invalid authentication token")
-            return credentials.credentials
-        else:
-            raise HTTPException(status_code=403, detail="Invalid authorization token")
+        credentials: HTTPAuthorizationCredentials = await super(
+            JWTBearer, self
+        ).__call__(request)
+        if not credentials:
+            raise HTTPException(
+                status_code=403, detail="Invalid authorization token"
+            )
+        if credentials.scheme != "Bearer":
+            raise HTTPException(
+                status_code=403, detail="Invalid authentication token"
+            )
+        return credentials.credentials
