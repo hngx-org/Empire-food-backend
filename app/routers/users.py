@@ -53,7 +53,7 @@ def all_org_users(
     db: Session = Depends(get_db), current_user: User = Depends(authenticate)
 ):
     """Returns all users linked to the organization of the current user"""
-    users = get_org_users(db, current_user.org_id, current_user.id)
+    users = get_org_users(db, current_user.org_id, current_user)
 
     return UserSearchResponse(
         message="List all users successful",
