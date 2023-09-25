@@ -18,7 +18,7 @@ def get_db_engine():
     elif DB_TYPE == "postgresql":
         DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     else:
-        DATABASE_URL = "sqlite:///./database.db"
+        DATABASE_URL = "sqlite:///./db.db"
 
     return (
         create_engine(DATABASE_URL, connect_args={"check_same_thread": False})

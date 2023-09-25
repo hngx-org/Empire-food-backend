@@ -9,6 +9,7 @@ from app.models.lunch_models import Lunch
 from app.models.organization_models import OrganizationLaunchWallet
 from app.models.user_models import User
 from app.schemas.lunch_schemas import SendLunch
+from sqlalchemy import or_
 
 
 def sendLunch(db: Session, data: SendLunch, user_id: int, org_id: int):

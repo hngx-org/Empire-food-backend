@@ -141,6 +141,8 @@ async def create_organization(
     ).first()
 
     if org_name_check:
+        db.query(User).filter(User.id == current_user.id).delete()
+        db.commit()
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Organization name already exists",
